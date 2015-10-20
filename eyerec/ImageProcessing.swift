@@ -217,6 +217,19 @@ class ImageProcessing
     }
     
     // カラーマトリクス変換
+    class func colorMatrixFilter(matrix: GPUMatrix4x4
+        , intensity: CGFloat
+        ) -> GPUImageColorMatrixFilter
+    {
+        // GPUMatrix4x4(one: GPUVector4(one: GLfloat, two: GLfloat, three: GLfloat, four: GLfloat), two: GPUVector4, three: GPUVector4, four: GPUVector4);
+        
+        // colorMatrix : GPUMatrix4x4 画像の各色を変換するために使用
+        // intensity : 新たに形質転換色各画素の元の色を置き換える度合い
+        var filter = GPUImageColorMatrixFilter();
+        filter.colorMatrix = matrix;
+        filter.intensity = intensity;
+        return filter;
+    }
     class func colorMatrixFilter(baseImage: UIImage) -> UIImage
     {
         var filter = GPUImageColorMatrixFilter();
@@ -376,6 +389,10 @@ class ImageProcessing
     }
 
     // 色反転
+    class func colorInvertFilter() -> GPUImageColorInvertFilter
+    {
+        return GPUImageColorInvertFilter();
+    }
     class func colorInvertFilter(baseImage: UIImage) -> UIImage
     {
         return GPUImageColorInvertFilter().imageByFilteringImage(baseImage);
@@ -438,6 +455,10 @@ class ImageProcessing
     }
     
     // 輝度による2値化
+    class func luminanceThresholdFilter() -> GPUImageLuminanceThresholdFilter
+    {
+        return GPUImageLuminanceThresholdFilter();
+    }
     class func luminanceThresholdFilter(baseImage: UIImage) -> UIImage
     {
         return GPUImageLuminanceThresholdFilter().imageByFilteringImage(baseImage);
@@ -1643,6 +1664,9 @@ class ImageProcessing
     }
 
     // 質のいいポスタライズみたいな
+    class func kuwaharaFilter() -> GPUImageKuwaharaFilter {
+        return GPUImageKuwaharaFilter();
+    }
     class func kuwaharaFilter(baseImage: UIImage) -> UIImage
     {
         return GPUImageKuwaharaFilter().imageByFilteringImage(baseImage);
@@ -1655,6 +1679,48 @@ class ImageProcessing
         var filter = GPUImageKuwaharaFilter();
         filter.radius = radius;
         return filter.imageByFilteringImage(baseImage);
+    }
+    
+    
+    //フィルタグループを作る
+    class func groupFilter(filters: [GPUImageFilter]) -> GPUImageFilterGroup
+    {
+        var group = GPUImageFilterGroup();
+        for i in 0 ..< filters.count {
+            let f = filters[i];
+            group.addFilter(f);
+            if i == 0 {
+                group.initialFilters = [f];
+            }
+            else {
+                let bf = filters[i-1];
+                bf.addTarget(f);
+            }
+            if i == filters.count-1 {
+                group.terminalFilter = f;
+            }
+        }
+        return group;
+    }
+    class func groupFilter(baseImage: UIImage, filters: [GPUImageFilter]) -> UIImage
+    {
+        var group = GPUImageFilterGroup();
+        for i in 0 ..< filters.count {
+            let f = filters[i];
+            group.addFilter(f);
+            if i == 0 {
+                group.initialFilters = [f];
+            }
+            else {
+                let bf = filters[i-1];
+                bf.addTarget(f);
+            }
+            if i == filters.count-1 {
+                group.terminalFilter = f;
+            }
+        }
+        
+        return group.imageByFilteringImage(baseImage);
     }
     
     class func filter_exec(image: UIImage, section: Int, row: Int, overlay: UIImage? = nil) -> UIImage

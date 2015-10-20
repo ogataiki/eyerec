@@ -167,7 +167,7 @@ class ViewController: UIViewController
         presentViewController(actionSheet, animated: true, completion: nil)
     }
     
-    func imageFilter_left(video: Bool = false) -> GPUImageTransformFilter {
+    func imageFilter_left(video: Bool = false) -> GPUImageFilterGroup {
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
         if video {
@@ -188,7 +188,11 @@ class ViewController: UIViewController
         else {
             transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
         }
-        return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
+        return ImageProcessing.groupFilter([
+            ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+            ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
+        ]);
+        //return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
     }
 
     func imageFilter_left(image: UIImage, video: Bool = false) -> UIImage {
@@ -213,10 +217,16 @@ class ViewController: UIViewController
         else {
             transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
         }
-        return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
+        return ImageProcessing.groupFilter(image,
+            filters:[
+                ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+                ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
+            ]);
+        //return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
     }
     
-    func imageFilter_right(video: Bool = false) -> GPUImageTransformFilter {
+    func imageFilter_right(video: Bool = false) -> GPUImageFilterGroup {
+        
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
         if video {
@@ -237,7 +247,12 @@ class ViewController: UIViewController
         else {
             transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
         }
-        return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
+        
+        return ImageProcessing.groupFilter([
+            ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+            ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
+        ]);
+        //return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
     }
     func imageFilter_right(image: UIImage, video: Bool = false) -> UIImage {
         
@@ -261,7 +276,12 @@ class ViewController: UIViewController
         else {
             transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
         }
-        return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
+        return ImageProcessing.groupFilter(image,
+            filters:[
+                ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+                ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
+            ]);
+        //return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
     }
 
 
