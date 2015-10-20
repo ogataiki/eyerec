@@ -17,13 +17,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="baL-kq-Bif">
-                                <rect key="frame" x="0.0" y="0.0" width="277" height="556"/>
+                                <rect key="frame" x="0.0" y="0.0" width="290" height="556"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y5k-Ny-yHK">
-                                <rect key="frame" x="277" y="0.0" width="46" height="556"/>
+                                <rect key="frame" x="290" y="0.0" width="20" height="556"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="46" id="4Aj-pa-g2g"/>
+                                    <constraint firstAttribute="width" constant="20" id="4Aj-pa-g2g"/>
                                 </constraints>
                             </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="obd-g9-Pyj">
@@ -54,7 +54,7 @@
                                 </items>
                             </toolbar>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ktw-gf-x3e">
-                                <rect key="frame" x="323" y="0.0" width="277" height="556"/>
+                                <rect key="frame" x="310" y="0.0" width="290" height="556"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

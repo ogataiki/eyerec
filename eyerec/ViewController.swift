@@ -7,6 +7,7 @@ import MobileCoreServices
 class ViewController: UIViewController
 , UIImagePickerControllerDelegate
 , UINavigationControllerDelegate
+, GPUImageMovieDelegate
 {
 
     @IBOutlet weak var left_image: UIImageView!
@@ -14,6 +15,8 @@ class ViewController: UIViewController
     
     var leftVideoView : GPUImageView!;
     var rightVideoView : GPUImageView!;
+    var leftMovie: GPUImageMovie!;
+    var rightMovie: GPUImageMovie!;
     var videoURL : NSURL!;
     
     var isVideo = false
@@ -51,8 +54,7 @@ class ViewController: UIViewController
     func pickSelect() {
         
         if isVideo {
-            leftVideoView.removeFromSuperview();
-            rightVideoView.removeFromSuperview();
+            movieStop();
             
             isVideo = false;
         }
@@ -91,29 +93,18 @@ class ViewController: UIViewController
                 self.pickMovieFromLibrary()
         })
         
-
         actionSheet.addAction(cancelAction)
         actionSheet.addAction(cameraAction)
         actionSheet.addAction(libraryAction)
         actionSheet.addAction(videoAction)
         
-        if let video = videoURL {
-            let videoRetryAction = UIAlertAction(title: "動画リトライ",
-                style: UIAlertActionStyle.Default,
-                handler:{
-                    (action:UIAlertAction!) -> Void in
-                    self.movieStart(video)
-            })
-            actionSheet.addAction(videoRetryAction)
-        }
-
         presentViewController(actionSheet, animated: true, completion: nil)
     }
     
     func imageFilter_left() -> GPUImageTransformFilter {
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, -0.15, 0.0, 1.0, 0.0);
+        transform = CATransform3DRotate(transform, 0.1, 0.0, 1.0, 0.0);
         return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
     }
 
@@ -121,83 +112,22 @@ class ViewController: UIViewController
         
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, -0.15, 0.0, 1.0, 0.0);
+        transform = CATransform3DRotate(transform, 0.1, 0.0, 1.0, 0.0);
         return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
-
-        /*
-        // image が 元画像のUIImage
-        let ciImage:CIImage = CIImage(image:image);
-        
-        let ciFilter:CIFilter = CIFilter(name: "CIHatchedScreen" )
-        ciFilter.setValue(ciImage, forKey: kCIInputImageKey)
-
-        /* モザイク的な
-        let ciFilter:CIFilter = CIFilter(name: "CIPixellate" )
-        ciFilter.setValue(ciImage, forKey: kCIInputImageKey)
-        ciFilter.setValue(10.0, forKey: "inputScale")
-        */
-        
-        /* 色調整
-        let ciFilter:CIFilter = CIFilter(name: "CIColorControls" )
-        ciFilter.setValue(ciImage, forKey: kCIInputImageKey)
-        ciFilter.setValue(1.0, forKey: "inputSaturation")
-        ciFilter.setValue(0.5, forKey: "inputBrightness")
-        ciFilter.setValue(0.8, forKey: "inputContrast")
-         */
-        
-        let ciContext:CIContext = CIContext(options: nil)
-        let cgimg:CGImageRef = ciContext.createCGImage(ciFilter.outputImage, fromRect:ciFilter.outputImage.extent())
-        
-        //加工後のUIImage
-        return UIImage(CGImage: cgimg, scale: 1.0, orientation:UIImageOrientation.Up)!
-        */
     }
     
     func imageFilter_right() -> GPUImageTransformFilter {
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, 0.15, 0.0, 1.0, 0.0);
+        transform = CATransform3DRotate(transform, -0.1, 0.0, 1.0, 0.0);
         return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
     }
     func imageFilter_right(image: UIImage) -> UIImage {
         
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, 0.15, 0.0, 1.0, 0.0);
+        transform = CATransform3DRotate(transform, -0.1, 0.0, 1.0, 0.0);
         return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
-        
-        
-        /*
-        // image が 元画像のUIImage
-        let ciImage:CIImage = CIImage(image:image);
-
-        let ciFilter:CIFilter = CIFilter(name: "CIPerspectiveTransform" )
-        ciFilter.setValue(ciImage, forKey: kCIInputImageKey)
-        ciFilter.setValue(CIVector(x: 100, y: 100), forKey: "inputTopLeft")
-        ciFilter.setValue(CIVector(x: 100, y: 100), forKey: "inputTopRight")
-        ciFilter.setValue(CIVector(x: 100, y: 100), forKey: "inputBottomRight")
-        ciFilter.setValue(CIVector(x: 100, y: 100), forKey: "inputBottomLeft")
-
-        /* モザイク的な
-        let ciFilter:CIFilter = CIFilter(name: "CIPixellate" )
-        ciFilter.setValue(ciImage, forKey: kCIInputImageKey)
-        ciFilter.setValue(10.0, forKey: "inputScale")
-        */
-
-        /* 色調整
-        let ciFilter:CIFilter = CIFilter(name: "CIColorControls" )
-        ciFilter.setValue(ciImage, forKey: kCIInputImageKey)
-        ciFilter.setValue(1.0, forKey: "inputSaturation")
-        ciFilter.setValue(0.5, forKey: "inputBrightness")
-        ciFilter.setValue(1.2, forKey: "inputContrast")
-        */
-        
-        let ciContext:CIContext = CIContext(options: nil)
-        let cgimg:CGImageRef = ciContext.createCGImage(ciFilter.outputImage, fromRect:ciFilter.outputImage.extent())
-        
-        //加工後のUIImage
-        return UIImage(CGImage: cgimg, scale: 1.0, orientation:UIImageOrientation.Up)!
-        */
     }
 
 
@@ -248,10 +178,19 @@ class ViewController: UIViewController
             isVideo = true
         }
         else if info[UIImagePickerControllerOriginalImage] != nil {
-            let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-            left_image.image = image;
+            
+            var image = info[UIImagePickerControllerOriginalImage] as! UIImage
+            
+            // 撮影時の向きを反映させるおまじない
+            UIGraphicsBeginImageContext(image.size);
+            image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height));
+            image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            // おまじない終わり
+            
+            //left_image.image = image;
             //right_image.image = image;
-            //left_image.image = imageFilter_left(image);
+            left_image.image = imageFilter_left(image);
             right_image.image = imageFilter_right(image);
         }
         picker.dismissViewControllerAnimated(true, completion: nil)
@@ -259,8 +198,17 @@ class ViewController: UIViewController
     
     func movieStart(url: NSURL) {
         
-        let left_movie = GPUImageMovie(URL: url);
-        let right_movie = GPUImageMovie(URL: url);
+        leftMovie = GPUImageMovie(URL: url);
+        rightMovie = GPUImageMovie(URL: url);
+        
+        leftMovie.delegate = self;
+        rightMovie.delegate = self;
+        
+        leftMovie.playAtActualSpeed = true;
+        rightMovie.playAtActualSpeed = true;
+        
+        //leftMovie.shouldRepeat = true;
+        //rightMovie.shouldRepeat = true;
         
         leftVideoView = GPUImageView();
         leftVideoView.frame = left_image.frame;
@@ -270,20 +218,54 @@ class ViewController: UIViewController
         rightVideoView.frame = right_image.frame;
         self.view.addSubview(rightVideoView);
         
-        //let left_filter = imageFilter_left();
-        //left_filter.addTarget(leftVideoView);
-        //left_movie.addTarget(left_filter.addTarget);
-        left_movie.addTarget(leftVideoView);
+        let left_filter = imageFilter_left();
+        left_filter.addTarget(leftVideoView);
+        leftMovie.addTarget(left_filter);
+        //leftMovie.addTarget(leftVideoView);
         
         let right_filter = imageFilter_right();
         right_filter.addTarget(rightVideoView);
-        right_movie.addTarget(right_filter);
-        //right_movie.addTarget(rightVideoView);
+        rightMovie.addTarget(right_filter);
+        //rightMovie.addTarget(rightVideoView);
         
-        left_movie.startProcessing();
-        right_movie.startProcessing();
+        leftMovie.startProcessing();
+        rightMovie.startProcessing();
+    }
+    func movieStop() {
+        leftMovie.cancelProcessing();
+        rightMovie.cancelProcessing();
+        leftMovie.removeAllTargets();
+        rightMovie.removeAllTargets();
+        leftVideoView.removeFromSuperview();
+        rightVideoView.removeFromSuperview();
     }
     
+    var movieFinish: Int = 0;
+    func didCompletePlayingMovie() {
+        if movieFinish == 0 {
+            movieFinish++;
+        }
+        else {
+            movieFinish = 0;
+            
+            let leftMovie_Befor = self.leftMovie;
+            let rightMovie_Befor = self.rightMovie;
+            let leftVideoView_Befor = self.leftVideoView;
+            let rightVideoView_Befor = self.rightVideoView;
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                
+                // UIの更新があるのでメインスレッドで
+                self.movieStart(self.videoURL);
+                
+                leftMovie_Befor.removeAllTargets();
+                rightMovie_Befor.removeAllTargets();
+                leftVideoView_Befor.removeFromSuperview();
+                rightVideoView_Befor.removeFromSuperview();
+            }
+        }
+    }
+
     override func shouldAutorotate() -> Bool {
         return true;
     }
@@ -292,207 +274,3 @@ class ViewController: UIViewController
     }
     
 }
-
-/* フィルターの種類
-CICategoryBlur
-CIBoxBlur
-CIDiscBlur
-CIGaussianBlur
-CIMaskedVariableBlur
-CIMedianFilter
-CIMotionBlur
-CINoiseReduction
-CIZoomBlur
-
-CICategoryColorAdjustment
-CIColorClamp
-CIColorControls
-CIColorMatrix
-CIColorPolynomial
-CIExposureAdjust
-CIGammaAdjust
-CIHueAdjust
-CILinearToSRGBToneCurve
-CISRGBToneCurveToLinear
-CITemperatureAndTint
-CIToneCurve
-CIVibrance
-CIWhitePointAdjust
-
-CICategoryColorEffect
-CIColorCrossPolynomial
-CIColorCube
-CIColorCubeWithColorSpace
-CIColorInvert
-CIColorMap
-CIColorMonochrome
-CIColorPosterize
-CIFalseColor
-CIMaskToAlpha
-CIMaximumComponent
-CIMinimumComponent
-CIPhotoEffectChrome
-CIPhotoEffectFade
-CIPhotoEffectInstant
-CIPhotoEffectMono
-CIPhotoEffectNoir
-CIPhotoEffectProcess
-CIPhotoEffectTonal
-CIPhotoEffectTransfer
-CISepiaTone
-CIVignette
-CIVignetteEffect
-
-CICategoryCompositeOperation
-CIAdditionCompositing
-CIColorBlendMode
-CIColorBurnBlendMode
-CIColorDodgeBlendMode
-CIDarkenBlendMode
-CIDifferenceBlendMode
-CIDivideBlendMode
-CIExclusionBlendMode
-CIHardLightBlendMode
-CIHueBlendMode
-CILightenBlendMode
-CILinearBurnBlendMode
-CILinearDodgeBlendMode
-CILuminosityBlendMode
-CIMaximumCompositing
-CIMinimumCompositing
-CIMultiplyBlendMode
-CIMultiplyCompositing
-CIOverlayBlendMode
-CIPinLightBlendMode
-CISaturationBlendMode
-CIScreenBlendMode
-CISoftLightBlendMode
-CISourceAtopCompositing
-CISourceInCompositing
-CISourceOutCompositing
-CISourceOverCompositing
-CISubtractBlendMode
-
-CICategoryDistortionEffect
-CIBumpDistortion
-CIBumpDistortionLinear
-CICircleSplashDistortion
-CICircularWrap
-CIDroste
-CIDisplacementDistortion
-CIGlassDistortion
-CIGlassLozenge
-CIHoleDistortion
-CILightTunnel
-CIPinchDistortion
-CIStretchCrop
-CITorusLensDistortion
-CITwirlDistortion
-CIVortexDistortion
-
-CICategoryGenerator
-CIAztecCodeGenerator
-CICheckerboardGenerator
-CICode128BarcodeGenerator
-CIConstantColorGenerator
-CILenticularHaloGenerator
-CIPDF417BarcodeGenerator
-CIQRCodeGenerator
-CIRandomGenerator
-CIStarShineGenerator
-CIStripesGenerator
-CISunbeamsGenerator
-
-CICategoryGeometryAdjustment
-CIAffineTransform
-CICrop
-CILanczosScaleTransform
-CIPerspectiveCorrection
-CIPerspectiveTransform
-CIPerspectiveTransformWithExtent
-CIStraightenFilter
-
-CICategoryGradient
-CIGaussianGradient
-CILinearGradient
-CIRadialGradient
-CISmoothLinearGradient
-
-CICategoryHalftoneEffect
-CICircularScreen
-CICMYKHalftone
-CIDotScreen
-CIHatchedScreen
-CILineScreen
-
-CICategoryReduction
-CIAreaAverage
-CIAreaHistogram
-CIRowAverage
-CIColumnAverage
-CIHistogramDisplayFilter
-CIAreaMaximum
-CIAreaMinimum
-CIAreaMaximumAlpha
-CIAreaMinimumAlpha
-
-CICategorySharpen
-CISharpenLuminance
-CIUnsharpMask
-
-CICategoryStylize
-CIBlendWithAlphaMask
-CIBlendWithMask
-CIBloom
-CIComicEffect
-CIConvolution3X3
-CIConvolution5X5
-CIConvolution7X7
-CIConvolution9Horizontal
-CIConvolution9Vertical
-CICrystallize
-CIDepthOfField
-CIEdges
-CIEdgeWork
-CIGloom
-CIHeightFieldFromMask
-CIHexagonalPixellate
-CIHighlightShadowAdjust
-CILineOverlay
-CIPixellate
-CIPointillize
-CIShadedMaterial
-CISpotColor
-CISpotLight
-
-CICategoryTileEffect
-CIAffineClamp
-CIAffineTile
-CIEightfoldReflectedTile
-CIFourfoldReflectedTile
-CIFourfoldRotatedTile
-CIFourfoldTranslatedTile
-CIGlideReflectedTile
-CIKaleidoscope
-CIOpTile
-CIParallelogramTile
-CIPerspectiveTile
-CISixfoldReflectedTile
-CISixfoldRotatedTile
-CITriangleKaleidoscope
-CITriangleTile
-CITwelvefoldReflectedTile
-
-CICategoryTransition
-CIAccordionFoldTransition
-CIBarsSwipeTransition
-CICopyMachineTransition
-CIDisintegrateWithMaskTransition
-CIDissolveTransition
-CIFlashTransition
-CIModTransition
-CIPageCurlTransition
-CIPageCurlWithShadowTransition
-CIRippleTransition
-CISwipeTransition
-*/
