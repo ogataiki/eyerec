@@ -15,6 +15,7 @@ class ViewController: UIViewController
     
     var leftVideoView : GPUImageView!;
     var rightVideoView : GPUImageView!;
+    var videoRote: CGFloat = 0;
     var leftMovie: GPUImageMovie!;
     var rightMovie: GPUImageMovie!;
     var videoURL : NSURL!;
@@ -45,19 +46,81 @@ class ViewController: UIViewController
         pickSelect()
     }
     
-    @IBAction func leftImageAction(sender: AnyObject) {
-    }
-    
-    @IBAction func rightImageAction(sender: AnyObject) {
+    @IBAction func otherAction(sender: AnyObject) {
+        //UIActionSheet
+        let actionSheet = UIAlertController(title:"オプション操作",
+            message: nil,
+            preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
+        //Cancel 一つだけしか指定できない
+        let cancelAction:UIAlertAction = UIAlertAction(title: "やめる",
+            style: UIAlertActionStyle.Cancel,
+            handler:{
+                (action:UIAlertAction!) -> Void in
+        })
+        actionSheet.addAction(cancelAction)
+
+        if let video = videoURL {
+            //Default 複数指定可
+            let lroteAction = UIAlertAction(title: "右回転",
+                style: UIAlertActionStyle.Default,
+                handler:{
+                    (action:UIAlertAction!) -> Void in
+                    
+                    self.videoRote += 90.0;
+                    if self.videoRote >= 360 {
+                        self.videoRote = self.videoRote - 360;
+                    }
+
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.leftMovie.delegate = nil;
+                        self.rightMovie.delegate = nil;
+                        
+                        self.leftMovie.removeAllTargets();
+                        self.rightMovie.removeAllTargets();
+                        self.leftVideoView.removeFromSuperview();
+                        self.rightVideoView.removeFromSuperview();
+
+                        // UIの更新があるのでメインスレッドで
+                        self.movieStart(self.videoURL);
+                    })
+            })
+            
+            let rroteAction = UIAlertAction(title: "左回転",
+                style: UIAlertActionStyle.Default,
+                handler:{
+                    (action:UIAlertAction!) -> Void in
+                    
+                    self.videoRote -= 90.0;
+                    if self.videoRote < 0 {
+                        self.videoRote = 360 + self.videoRote;
+                    }
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+
+                        // UIの更新があるのでメインスレッドで
+                        
+                        self.leftMovie.delegate = nil;
+                        self.rightMovie.delegate = nil;
+                        
+                        self.leftMovie.removeAllTargets();
+                        self.rightMovie.removeAllTargets();
+                        self.leftVideoView.removeFromSuperview();
+                        self.rightVideoView.removeFromSuperview();
+
+                        self.movieStart(self.videoURL);
+                    })
+            })
+            
+            actionSheet.addAction(lroteAction)
+            actionSheet.addAction(rroteAction)
+        }
+        
+        presentViewController(actionSheet, animated: true, completion: nil)
     }
     
     func pickSelect() {
-        
-        if isVideo {
-            movieStop();
-            
-            isVideo = false;
-        }
         
         //UIActionSheet
         let actionSheet = UIAlertController(title:"画像を選択",
@@ -65,7 +128,7 @@ class ViewController: UIViewController
             preferredStyle: UIAlertControllerStyle.ActionSheet)
         
         //Cancel 一つだけしか指定できない
-        let cancelAction:UIAlertAction = UIAlertAction(title: "Cancel",
+        let cancelAction:UIAlertAction = UIAlertAction(title: "やめる",
             style: UIAlertActionStyle.Cancel,
             handler:{
                 (action:UIAlertAction!) -> Void in
@@ -76,6 +139,7 @@ class ViewController: UIViewController
             style: UIAlertActionStyle.Default,
             handler:{
                 (action:UIAlertAction!) -> Void in
+                self.movieStop();
                 self.pickImageFromCamera()
         })
         
@@ -83,6 +147,7 @@ class ViewController: UIViewController
             style: UIAlertActionStyle.Default,
             handler:{
                 (action:UIAlertAction!) -> Void in
+                self.movieStop();
                 self.pickImageFromLibrary()
         })
         
@@ -90,6 +155,7 @@ class ViewController: UIViewController
             style: UIAlertActionStyle.Default,
             handler:{
                 (action:UIAlertAction!) -> Void in
+                self.movieStop();
                 self.pickMovieFromLibrary()
         })
         
@@ -101,32 +167,100 @@ class ViewController: UIViewController
         presentViewController(actionSheet, animated: true, completion: nil)
     }
     
-    func imageFilter_left() -> GPUImageTransformFilter {
+    func imageFilter_left(video: Bool = false) -> GPUImageTransformFilter {
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, 0.1, 0.0, 1.0, 0.0);
+        if video {
+            let rote = videoRote;
+            if rote <= 45 || rote > 270+45 {
+                transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 45 && rote <= 90+45 {
+                transform = CATransform3DRotate(transform, 0.025, 1.0, 0.0, 0.0);
+            }
+            else if rote > 90+45 || rote <= 180+45 {
+                transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 180+45 || rote <= 270+45 {
+                transform = CATransform3DRotate(transform, -0.025, 1.0, 0.0, 0.0);
+            }
+        }
+        else {
+            transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+        }
         return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
     }
 
-    func imageFilter_left(image: UIImage) -> UIImage {
+    func imageFilter_left(image: UIImage, video: Bool = false) -> UIImage {
         
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, 0.1, 0.0, 1.0, 0.0);
+        if video {
+            let rote = videoRote;
+            if rote <= 45 || rote > 270+45 {
+                transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 45 && rote <= 90+45 {
+                transform = CATransform3DRotate(transform, 0.025, 1.0, 0.0, 0.0);
+            }
+            else if rote > 90+45 && rote <= 180+45 {
+                transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 180+45 && rote <= 270+45 {
+                transform = CATransform3DRotate(transform, -0.025, 1.0, 0.0, 0.0);
+            }
+        }
+        else {
+            transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+        }
         return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
     }
     
-    func imageFilter_right() -> GPUImageTransformFilter {
+    func imageFilter_right(video: Bool = false) -> GPUImageTransformFilter {
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, -0.1, 0.0, 1.0, 0.0);
+        if video {
+            let rote = videoRote;
+            if rote <= 45 || rote > 270+45 {
+                transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 45 && rote <= 90+45 {
+                transform = CATransform3DRotate(transform, -0.025, 1.0, 0.0, 0.0);
+            }
+            else if rote > 90+45 && rote <= 180+45 {
+                transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 180+45 && rote <= 270+45 {
+                transform = CATransform3DRotate(transform, 0.025, 1.0, 0.0, 0.0);
+            }
+        }
+        else {
+            transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
+        }
         return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
     }
-    func imageFilter_right(image: UIImage) -> UIImage {
+    func imageFilter_right(image: UIImage, video: Bool = false) -> UIImage {
         
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
-        transform = CATransform3DRotate(transform, -0.1, 0.0, 1.0, 0.0);
+        if video {
+            let rote = videoRote;
+            if rote <= 45 || rote > 270+45 {
+                transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 45 && rote <= 90+45 {
+                transform = CATransform3DRotate(transform, -0.025, 1.0, 0.0, 0.0);
+            }
+            else if rote > 90+45 || rote <= 180+45 {
+                transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+            }
+            else if rote > 180+45 || rote <= 270+45 {
+                transform = CATransform3DRotate(transform, 0.025, 1.0, 0.0, 0.0);
+            }
+        }
+        else {
+            transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
+        }
         return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
     }
 
@@ -218,12 +352,14 @@ class ViewController: UIViewController
         rightVideoView.frame = right_image.frame;
         self.view.addSubview(rightVideoView);
         
-        let left_filter = imageFilter_left();
+        movieRotation(videoRote);
+
+        let left_filter = imageFilter_left(video:true);
         left_filter.addTarget(leftVideoView);
         leftMovie.addTarget(left_filter);
         //leftMovie.addTarget(leftVideoView);
         
-        let right_filter = imageFilter_right();
+        let right_filter = imageFilter_right(video:true);
         right_filter.addTarget(rightVideoView);
         rightMovie.addTarget(right_filter);
         //rightMovie.addTarget(rightVideoView);
@@ -232,12 +368,23 @@ class ViewController: UIViewController
         rightMovie.startProcessing();
     }
     func movieStop() {
-        leftMovie.cancelProcessing();
-        rightMovie.cancelProcessing();
-        leftMovie.removeAllTargets();
-        rightMovie.removeAllTargets();
-        leftVideoView.removeFromSuperview();
-        rightVideoView.removeFromSuperview();
+        if isVideo {
+            
+            leftMovie.delegate = nil;
+            rightMovie.delegate = nil;
+            leftMovie.cancelProcessing();
+            rightMovie.cancelProcessing();
+            leftMovie.removeAllTargets();
+            rightMovie.removeAllTargets();
+            leftVideoView.removeFromSuperview();
+            rightVideoView.removeFromSuperview();
+            
+            isVideo = false;
+        }
+    }
+    func movieRotation(rote: CGFloat) {
+        leftVideoView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI) * rote / 180.0);
+        rightVideoView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI) * rote / 180.0);
     }
     
     var movieFinish: Int = 0;
@@ -248,20 +395,16 @@ class ViewController: UIViewController
         else {
             movieFinish = 0;
             
-            let leftMovie_Befor = self.leftMovie;
-            let rightMovie_Befor = self.rightMovie;
-            let leftVideoView_Befor = self.leftVideoView;
-            let rightVideoView_Befor = self.rightVideoView;
-            
             dispatch_async(dispatch_get_main_queue()) {
                 
                 // UIの更新があるのでメインスレッドで
-                self.movieStart(self.videoURL);
                 
-                leftMovie_Befor.removeAllTargets();
-                rightMovie_Befor.removeAllTargets();
-                leftVideoView_Befor.removeFromSuperview();
-                rightVideoView_Befor.removeFromSuperview();
+                self.leftMovie.removeAllTargets();
+                self.rightMovie.removeAllTargets();
+                self.leftVideoView.removeFromSuperview();
+                self.rightVideoView.removeFromSuperview();
+                
+                self.movieStart(self.videoURL);
             }
         }
     }
