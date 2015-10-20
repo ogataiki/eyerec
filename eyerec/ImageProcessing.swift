@@ -1506,6 +1506,10 @@ class ImageProcessing
     
     
     // ノイズ低減漫画フィルタ
+    class func smoothToonFilter() -> GPUImageSmoothToonFilter
+    {
+        return GPUImageSmoothToonFilter();
+    }
     class func smoothToonFilter(baseImage: UIImage) -> UIImage
     {
         return GPUImageSmoothToonFilter().imageByFilteringImage(baseImage);

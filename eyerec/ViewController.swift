@@ -189,7 +189,7 @@ class ViewController: UIViewController
             transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
         }
         return ImageProcessing.groupFilter([
-            ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+            //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
             ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
         ]);
         //return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
@@ -219,7 +219,7 @@ class ViewController: UIViewController
         }
         return ImageProcessing.groupFilter(image,
             filters:[
-                ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+                //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
                 ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
             ]);
         //return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
@@ -249,7 +249,7 @@ class ViewController: UIViewController
         }
         
         return ImageProcessing.groupFilter([
-            ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+            //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
             ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
         ]);
         //return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
@@ -278,7 +278,7 @@ class ViewController: UIViewController
         }
         return ImageProcessing.groupFilter(image,
             filters:[
-                ImageProcessing.kuwaharaFilter() as GPUImageFilter,
+                //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
                 ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
             ]);
         //return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
