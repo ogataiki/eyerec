@@ -253,6 +253,23 @@ class ImageProcessing
         // GPUMatrix4x4(one: GPUVector4(one: GLfloat, two: GLfloat, three: GLfloat, four: GLfloat), two: GPUVector4, three: GPUVector4, four: GPUVector4);
         
         // colorMatrix : GPUMatrix4x4 画像の各色を変換するために使用
+        /* 黒を透明化
+        GPUMatrix4x4(
+            one:    GPUVector4(one: 0.0, two: 0.0, three: 0.0, four: 1.0),
+            two:    GPUVector4(one: 0.0, two: 0.0, three: 0.0, four: 1.0),
+            three:  GPUVector4(one: 0.0, two: 0.0, three: 0.0, four: 1.0),
+            four:   GPUVector4(one: 1.0, two: 0.0, three: 0.0, four: 0.0)
+        )
+        */
+        /* 白を透明化
+        GPUMatrix4x4(
+            one:    GPUVector4(one: 1.0, two: 1.0, three: 1.0, four: 0.0),
+            two:    GPUVector4(one: 1.0, two: 1.0, three: 1.0, four: 0.0),
+            three:  GPUVector4(one: 1.0, two: 1.0, three: 1.0, four: 0.0),
+            four:   GPUVector4(one: 0.0, two: 1.0, three: 1.0, four: 1.0)
+        )
+        */
+
         // intensity : 新たに形質転換色各画素の元の色を置き換える度合い
         var filter = GPUImageColorMatrixFilter();
         filter.colorMatrix = matrix;
@@ -438,6 +455,12 @@ class ImageProcessing
     }
     
     // アルファチャンネル調整
+    class func opacityFilter() -> GPUImageOpacityFilter
+    {
+        var filter = GPUImageOpacityFilter();
+        filter.opacity = 0.5;
+        return filter;
+    }
     class func opacityFilter(baseImage: UIImage) -> UIImage
     {
         var filter = GPUImageOpacityFilter();
@@ -474,6 +497,10 @@ class ImageProcessing
     }
     
     // 平均輝度による2値化
+    class func averageLuminanceThresholdFilter() -> GPUImageAverageLuminanceThresholdFilter
+    {
+        return GPUImageAverageLuminanceThresholdFilter();
+    }
     class func averageLuminanceThresholdFilter(baseImage: UIImage) -> UIImage
     {
         return GPUImageAverageLuminanceThresholdFilter().imageByFilteringImage(baseImage);
@@ -495,6 +522,21 @@ class ImageProcessing
     //
     
     // 2D変形
+    class func transformFilter(transform: CGAffineTransform
+        , ignoreAspectRatio: Bool
+        ) -> GPUImageTransformFilter
+    {
+        // パラメータ例
+        //var t: CGAffineTransform;
+        //t = CGAffineTransformMakeScale(0.75, 0.75); //　縮小
+        //t = CGAffineTransformTranslate(t, 0, 0.5);  // 移動
+        
+        var filter = GPUImageTransformFilter();
+        filter.affineTransform = transform;
+        filter.ignoreAspectRatio = ignoreAspectRatio;
+        return filter;
+    }
+
     class func transform2DFilter(baseImage: UIImage) -> UIImage
     {
         var filter = GPUImageTransformFilter();
@@ -624,6 +666,20 @@ class ImageProcessing
     }
     
     // ガウスぼかし
+    class func gaussianBlurFilter() -> GPUImageGaussianBlurFilter
+    {
+        var filter = GPUImageGaussianBlurFilter();
+        filter.blurRadiusInPixels = 2.0;
+        return filter;
+    }
+    class func gaussianBlurFilter(blurSize: CGFloat
+        ) -> GPUImageGaussianBlurFilter
+    {
+        // blurSize : 0.0 ~ Default 1.0
+        var filter = GPUImageGaussianBlurFilter();
+        filter.blurRadiusInPixels = blurSize;
+        return filter;
+    }
     class func gaussianBlurFilter(baseImage: UIImage) -> UIImage
     {
         var filter = GPUImageGaussianBlurFilter();
@@ -744,6 +800,10 @@ class ImageProcessing
     }
 
     // ゾーベルエッジ検出白強調
+    class func sobelEdgeDetectionFilter() -> GPUImageSobelEdgeDetectionFilter
+    {
+        return GPUImageSobelEdgeDetectionFilter();
+    }
     class func sobelEdgeDetectionFilter(baseImage: UIImage) -> UIImage
     {
         return GPUImageSobelEdgeDetectionFilter().imageByFilteringImage(baseImage);
@@ -1686,6 +1746,75 @@ class ImageProcessing
     }
     
     
+    
+    
+    //
+    // Original Shaders
+    //
+    
+    // 動き検出で白くなる部分を右に移動する(立体視用テスト)
+    class func lowPassMoveFilter() -> LowPassMoveFilter
+    {
+        return LowPassMoveFilter();
+    }
+    class func lowPassMoveFilter(lowPassFilterStrength: CGFloat
+        ) -> LowPassMoveFilter
+    {
+        // lowPassFilterStrength : 0.0 ~ 1.0 Default 0.5
+        var filter = LowPassMoveFilter();
+        filter.lowPassFilterStrength = lowPassFilterStrength;
+        return filter;
+    }
+    class func lowPassMoveFilter(baseImage: UIImage) -> UIImage
+    {
+        return LowPassMoveFilter().imageByFilteringImage(baseImage);
+    }
+    class func lowPassMoveFilter(baseImage: UIImage
+        , lowPassFilterStrength: CGFloat
+        ) -> UIImage
+    {
+        // lowPassFilterStrength : 0.0 ~ 1.0 Default 0.5
+        var filter = LowPassMoveFilter();
+        filter.lowPassFilterStrength = lowPassFilterStrength;
+        return filter.imageByFilteringImage(baseImage);
+    }
+    
+    // ゾーベルエッジ検出で検出したエッジを右にずらす(立体視用テスト)
+    class func sobelEdgeMoveFilter() -> SobelEdgeMoveFilter
+    {
+        return SobelEdgeMoveFilter();
+    }
+    class func sobelEdgeMoveFilter(texelWidth: CGFloat, texelHeight: CGFloat) -> SobelEdgeMoveFilter
+    {
+        // texelWidth : 0.001くらいが丁度いい
+        // texelHeight : 0.001くらいが丁度いい
+        var filter = SobelEdgeMoveFilter();
+        filter.texelWidth = texelWidth;
+        filter.texelHeight = texelHeight;
+        return filter;
+    }
+    class func sobelEdgeMoveFilter(baseImage: UIImage) -> UIImage
+    {
+        return SobelEdgeMoveFilter().imageByFilteringImage(baseImage);
+    }
+    class func sobelEdgeMoveFilter(baseImage: UIImage, texelWidth: CGFloat, texelHeight: CGFloat) -> UIImage
+    {
+        // texelWidth : 0.001くらいが丁度いい
+        // texelHeight : 0.001くらいが丁度いい
+        var filter = SobelEdgeMoveFilter();
+        filter.texelWidth = texelWidth;
+        filter.texelHeight = texelHeight;
+        return filter.imageByFilteringImage(baseImage);
+    }
+
+
+    
+    
+    //
+    // other
+    //
+
+    
     //フィルタグループを作る
     class func groupFilter(filters: [GPUImageFilter]) -> GPUImageFilterGroup
     {
@@ -1697,12 +1826,36 @@ class ImageProcessing
                 group.initialFilters = [f];
             }
             else {
-                let bf = filters[i-1];
+                let bf = group.filterAtIndex(UInt(i-1));
                 bf.addTarget(f);
             }
             if i == filters.count-1 {
                 group.terminalFilter = f;
             }
+        }
+        return group;
+    }
+    class func groupFilter(baseGroup: GPUImageFilterGroup, filters: [GPUImageFilter]) -> GPUImageFilterGroup
+    {
+        var group = baseGroup;
+        var fcount = group.filterCount();
+        for i in 0 ..< filters.count {
+            let f = filters[i];
+            group.addFilter(f);
+            
+            if i == 0 && fcount == 0 {
+                group.initialFilters = [f];
+            }
+            else {
+                let bf = group.filterAtIndex(UInt(fcount-1));
+                bf.addTarget(f);
+            }
+            
+            if i == filters.count-1 {
+                group.terminalFilter = f;
+            }
+            
+            fcount++;
         }
         return group;
     }
@@ -1716,7 +1869,7 @@ class ImageProcessing
                 group.initialFilters = [f];
             }
             else {
-                let bf = filters[i-1];
+                let bf = group.filterAtIndex(UInt(i-1));
                 bf.addTarget(f);
             }
             if i == filters.count-1 {
@@ -1726,7 +1879,67 @@ class ImageProcessing
         
         return group.imageByFilteringImage(baseImage);
     }
-    
+    class func groupFilter(baseImage: UIImage, baseGroup: GPUImageFilterGroup, filters: [GPUImageFilter]) -> UIImage
+    {
+        var group = baseGroup;
+        var fcount = group.filterCount();
+        for i in 0 ..< filters.count {
+            let f = filters[i];
+            group.addFilter(f);
+            if i == 0 && fcount == 0 {
+                group.initialFilters = [f];
+            }
+            else {
+                let bf = group.filterAtIndex(UInt(fcount-1));
+                bf.addTarget(f);
+            }
+            if i == filters.count-1 {
+                group.terminalFilter = f;
+            }
+            
+            fcount++;
+        }
+        
+        return group.imageByFilteringImage(baseImage);
+    }
+    // グループの接続
+    class func groupFilter(baseGroup: GPUImageFilterGroup, groups: [GPUImageFilterGroup]) -> GPUImageFilterGroup
+    {
+        var group = baseGroup;
+        var fcount = group.filterCount();
+        for i in 0 ..< groups.count {
+            var gfcount = groups[i].filterCount();
+            for fi in 0 ..< gfcount {
+                if groups[i].filterAtIndex(fi) is GPUImageFilterGroup {
+                    let g = groups[i].filterAtIndex(fi) as! GPUImageFilterGroup;
+                    group = ImageProcessing.groupFilter(group, groups: [g]);
+                    
+                    fcount += g.filterCount();
+                }
+                else if groups[i].filterAtIndex(fi) is GPUImageFilter {
+                    let f = groups[i].filterAtIndex(fi) as! GPUImageFilter;
+                    group.addFilter(f);
+                    
+                    if fi == 0 && fcount == 0 {
+                        group.initialFilters = [f];
+                    }
+                    else {
+                        let bf = group.filterAtIndex(UInt(fcount-1));
+                        bf.addTarget(f);
+                    }
+                    
+                    if i == groups.count-1 && fi == gfcount-1 {
+                        group.terminalFilter = f;
+                    }
+                    
+                    fcount++;
+                }
+            }
+        }
+        return group;
+    }
+
+   
     class func filter_exec(image: UIImage, section: Int, row: Int, overlay: UIImage? = nil) -> UIImage
     {
         switch (section) {

@@ -17,6 +17,10 @@
 		508221251BD47281002D3E57 /* ImageProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508221241BD47281002D3E57 /* ImageProcessing.swift */; };
 		508221281BD47EF4002D3E57 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 508221261BD47EF4002D3E57 /* AssetsLibrary.framework */; };
 		508221291BD47EF4002D3E57 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 508221271BD47EF4002D3E57 /* AVFoundation.framework */; };
+		50A4EB951BD71A2D00191B26 /* LowPassMoveFilter.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 50A4EB941BD71A2D00191B26 /* LowPassMoveFilter.fsh */; };
+		50A4EB9C1BD72E9800191B26 /* LowPassMoveFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A4EB9B1BD72E9800191B26 /* LowPassMoveFilter.swift */; };
+		50A4EB9E1BD773ED00191B26 /* SobelEdgeMoveFilter.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 50A4EB9D1BD773ED00191B26 /* SobelEdgeMoveFilter.fsh */; };
+		50A4EBA01BD7741D00191B26 /* SobelEdgeMoveFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A4EB9F1BD7741D00191B26 /* SobelEdgeMoveFilter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +48,11 @@
 		508221241BD47281002D3E57 /* ImageProcessing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageProcessing.swift; sourceTree = "<group>"; };
 		508221261BD47EF4002D3E57 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		508221271BD47EF4002D3E57 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		50A4EB941BD71A2D00191B26 /* LowPassMoveFilter.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = LowPassMoveFilter.fsh; sourceTree = "<group>"; };
+		50A4EB961BD72B2900191B26 /* ObjCBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCBridge.h; sourceTree = "<group>"; };
+		50A4EB9B1BD72E9800191B26 /* LowPassMoveFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LowPassMoveFilter.swift; sourceTree = "<group>"; };
+		50A4EB9D1BD773ED00191B26 /* SobelEdgeMoveFilter.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = SobelEdgeMoveFilter.fsh; sourceTree = "<group>"; };
+		50A4EB9F1BD7741D00191B26 /* SobelEdgeMoveFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SobelEdgeMoveFilter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +83,7 @@
 				500EF1001BD0C9340042B11C /* eyerecTests */,
 				500EF0E91BD0C9330042B11C /* Products */,
 				508221221BD471FE002D3E57 /* Frameworks */,
+				50A4EB931BD7120E00191B26 /* Shaders */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,6 +106,7 @@
 				500EF0F41BD0C9330042B11C /* Images.xcassets */,
 				500EF0F61BD0C9330042B11C /* LaunchScreen.xib */,
 				500EF0EB1BD0C9330042B11C /* Supporting Files */,
+				50A4EB961BD72B2900191B26 /* ObjCBridge.h */,
 			);
 			path = eyerec;
 			sourceTree = "<group>";
@@ -133,6 +144,17 @@
 				508221201BD471F7002D3E57 /* GPUImage.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		50A4EB931BD7120E00191B26 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				50A4EB941BD71A2D00191B26 /* LowPassMoveFilter.fsh */,
+				50A4EB9B1BD72E9800191B26 /* LowPassMoveFilter.swift */,
+				50A4EB9D1BD773ED00191B26 /* SobelEdgeMoveFilter.fsh */,
+				50A4EB9F1BD7741D00191B26 /* SobelEdgeMoveFilter.swift */,
+			);
+			name = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,6 +240,8 @@
 			files = (
 				500EF0F31BD0C9330042B11C /* Main.storyboard in Resources */,
 				500EF0F81BD0C9330042B11C /* LaunchScreen.xib in Resources */,
+				50A4EB951BD71A2D00191B26 /* LowPassMoveFilter.fsh in Resources */,
+				50A4EB9E1BD773ED00191B26 /* SobelEdgeMoveFilter.fsh in Resources */,
 				500EF0F51BD0C9330042B11C /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,9 +277,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50A4EB9C1BD72E9800191B26 /* LowPassMoveFilter.swift in Sources */,
 				500EF0F01BD0C9330042B11C /* ViewController.swift in Sources */,
 				500EF0EE1BD0C9330042B11C /* AppDelegate.swift in Sources */,
 				508221251BD47281002D3E57 /* ImageProcessing.swift in Sources */,
+				50A4EBA01BD7741D00191B26 /* SobelEdgeMoveFilter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +419,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b97d66eb-fe3d-4c54-8d07-5010c5234cfe";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PROJECT)/ObjCBridge.h";
 			};
 			name = Debug;
 		};
@@ -409,6 +436,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b97d66eb-fe3d-4c54-8d07-5010c5234cfe";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PROJECT)/ObjCBridge.h";
 			};
 			name = Release;
 		};

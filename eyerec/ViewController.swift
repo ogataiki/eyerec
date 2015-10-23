@@ -168,65 +168,68 @@ class ViewController: UIViewController
     }
     
     func imageFilter_left(video: Bool = false) -> GPUImageFilterGroup {
-        var transform = CATransform3DIdentity;
-        transform.m34 = 0.5;
+        
+        //return ImageProcessing.groupFilter([
+            //ImageProcessing.luminanceThresholdFilter() as GPUImageFilter
+            //ImageProcessing.sobelEdgeMoveFilter() as GPUImageFilter
+        //]);
+        //return ImageProcessing.averageLuminanceThresholdFilter();
+        return ImageProcessing.lowPassMoveFilter();
+        //return ImageProcessing.groupFilter(ImageProcessing.lowPassMoveFilter(), groups: [
+        //    ImageProcessing.lowPassMoveFilter(),
+        //    ImageProcessing.lowPassMoveFilter(),
+        //    ImageProcessing.lowPassMoveFilter(),
+        //    ImageProcessing.lowPassMoveFilter()
+        //]);
+
+        /*
+        var transform3D = CATransform3DIdentity;
+        transform3D.m34 = 0.5;
+        let angle: CGFloat = 0.1;
         if video {
             let rote = videoRote;
             if rote <= 45 || rote > 270+45 {
-                transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+                transform3D = CATransform3DRotate(transform3D, angle, 0.0, 1.0, 0.0);
             }
             else if rote > 45 && rote <= 90+45 {
-                transform = CATransform3DRotate(transform, 0.025, 1.0, 0.0, 0.0);
+                transform3D = CATransform3DRotate(transform3D, angle, 1.0, 0.0, 0.0);
             }
-            else if rote > 90+45 || rote <= 180+45 {
-                transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
+            else if rote > 90+45 && rote <= 180+45 {
+                transform3D = CATransform3DRotate(transform3D, angle*(-1), 0.0, 1.0, 0.0);
             }
-            else if rote > 180+45 || rote <= 270+45 {
-                transform = CATransform3DRotate(transform, -0.025, 1.0, 0.0, 0.0);
+            else if rote > 180+45 && rote <= 270+45 {
+                transform3D = CATransform3DRotate(transform3D, angle*(-1), 1.0, 0.0, 0.0);
             }
         }
         else {
-            transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
+            transform3D = CATransform3DRotate(transform3D, angle, 0.0, 1.0, 0.0);
         }
-        return ImageProcessing.groupFilter([
-            //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
-            ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
-        ]);
-        //return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
+        
+        return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
+        */
     }
 
     func imageFilter_left(image: UIImage, video: Bool = false) -> UIImage {
         
-        var transform = CATransform3DIdentity;
-        transform.m34 = 0.5;
-        if video {
-            let rote = videoRote;
-            if rote <= 45 || rote > 270+45 {
-                transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
-            }
-            else if rote > 45 && rote <= 90+45 {
-                transform = CATransform3DRotate(transform, 0.025, 1.0, 0.0, 0.0);
-            }
-            else if rote > 90+45 && rote <= 180+45 {
-                transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
-            }
-            else if rote > 180+45 && rote <= 270+45 {
-                transform = CATransform3DRotate(transform, -0.025, 1.0, 0.0, 0.0);
-            }
-        }
-        else {
-            transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
-        }
-        return ImageProcessing.groupFilter(image,
-            filters:[
-                //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
-                ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
-            ]);
-        //return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
+        //return ImageProcessing.groupFilter([
+            //ImageProcessing.luminanceThresholdFilter() as GPUImageFilter
+            //ImageProcessing.sobelEdgeMoveFilter() as GPUImageFilter
+        //]).imageByFilteringImage(image);
+        //return ImageProcessing.averageLuminanceThresholdFilter().imageByFilteringImage(image);
+        return ImageProcessing.lowPassMoveFilter().imageByFilteringImage(image);
+        //return ImageProcessing.groupFilter(ImageProcessing.lowPassMoveFilter(), groups: [
+        //    ImageProcessing.lowPassMoveFilter(),
+        //    ImageProcessing.lowPassMoveFilter(),
+        //    ImageProcessing.lowPassMoveFilter(),
+        //    ImageProcessing.lowPassMoveFilter()
+        //]).imageByFilteringImage(image);
     }
     
     func imageFilter_right(video: Bool = false) -> GPUImageFilterGroup {
         
+        return ImageProcessing.lowPassMoveFilter();
+
+        /*
         var transform = CATransform3DIdentity;
         transform.m34 = 0.5;
         if video {
@@ -248,40 +251,12 @@ class ViewController: UIViewController
             transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
         }
         
-        return ImageProcessing.groupFilter([
-            //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
-            ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
-        ]);
-        //return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
+        return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
+        */
     }
     func imageFilter_right(image: UIImage, video: Bool = false) -> UIImage {
         
-        var transform = CATransform3DIdentity;
-        transform.m34 = 0.5;
-        if video {
-            let rote = videoRote;
-            if rote <= 45 || rote > 270+45 {
-                transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
-            }
-            else if rote > 45 && rote <= 90+45 {
-                transform = CATransform3DRotate(transform, -0.025, 1.0, 0.0, 0.0);
-            }
-            else if rote > 90+45 || rote <= 180+45 {
-                transform = CATransform3DRotate(transform, 0.025, 0.0, 1.0, 0.0);
-            }
-            else if rote > 180+45 || rote <= 270+45 {
-                transform = CATransform3DRotate(transform, 0.025, 1.0, 0.0, 0.0);
-            }
-        }
-        else {
-            transform = CATransform3DRotate(transform, -0.025, 0.0, 1.0, 0.0);
-        }
-        return ImageProcessing.groupFilter(image,
-            filters:[
-                //ImageProcessing.kuwaharaFilter() as GPUImageFilter,
-                ImageProcessing.transformFilter(transform, ignoreAspectRatio: true) as GPUImageFilter
-            ]);
-        //return ImageProcessing.transformFilter(image, transform: transform, ignoreAspectRatio: true);
+        return ImageProcessing.lowPassMoveFilter().imageByFilteringImage(image);
     }
 
 
@@ -343,9 +318,9 @@ class ViewController: UIViewController
             // おまじない終わり
             
             //left_image.image = image;
-            //right_image.image = image;
+            right_image.image = image;
             left_image.image = imageFilter_left(image);
-            right_image.image = imageFilter_right(image);
+            //right_image.image = imageFilter_right(image);
         }
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -379,10 +354,10 @@ class ViewController: UIViewController
         leftMovie.addTarget(left_filter);
         //leftMovie.addTarget(leftVideoView);
         
-        let right_filter = imageFilter_right(video:true);
-        right_filter.addTarget(rightVideoView);
-        rightMovie.addTarget(right_filter);
-        //rightMovie.addTarget(rightVideoView);
+        //let right_filter = imageFilter_right(video:true);
+        //right_filter.addTarget(rightVideoView);
+        //rightMovie.addTarget(right_filter);
+        rightMovie.addTarget(rightVideoView);
         
         leftMovie.startProcessing();
         rightMovie.startProcessing();
