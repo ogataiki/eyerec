@@ -30,7 +30,7 @@ class LowPassMoveFilter : GPUImageFilterGroup
         self.addFilter(lowPassFilter);
         self.addFilter(frameComparisonFilter);
 
-        unowned var weakSelf: LowPassMoveFilter = self;
+        unowned let weakSelf: LowPassMoveFilter = self;
         
         averageColor.colorAverageProcessingFinishedBlock = {(redComponent: CGFloat, greenComponent: CGFloat, blueComponent: CGFloat, alphaComponent: CGFloat, frameTime: CMTime) -> Void in
             if weakSelf.motionDetectionBlock != nil {

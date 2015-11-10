@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -16,22 +17,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="baL-kq-Bif">
-                                <rect key="frame" x="0.0" y="0.0" width="290" height="556"/>
-                            </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y5k-Ny-yHK">
-                                <rect key="frame" x="290" y="0.0" width="20" height="556"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="4Aj-pa-g2g"/>
-                                </constraints>
-                            </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="obd-g9-Pyj">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <animations/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="1W4-MP-R5g"/>
                                 </constraints>
                                 <items>
+                                    <barButtonItem title="MagicEye" style="plain" id="G6U-zd-5P4">
+                                        <connections>
+                                            <action selector="modeChangeAction:" destination="BYZ-38-t0r" id="bhy-aR-LDW"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="R8t-yG-mx2"/>
                                     <barButtonItem systemItem="camera" id="VAp-LF-zV3">
                                         <connections>
@@ -39,58 +36,38 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Dew-Kj-dig"/>
-                                    <barButtonItem systemItem="action" id="BXk-Oo-01i">
+                                    <barButtonItem systemItem="action" id="5Oc-5t-zjV">
                                         <connections>
-                                            <action selector="otherAction:" destination="BYZ-38-t0r" id="wEM-Df-V6Q"/>
+                                            <action selector="otherAction:" destination="BYZ-38-t0r" id="wiZ-8w-dZZ"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ktw-gf-x3e">
-                                <rect key="frame" x="310" y="0.0" width="290" height="556"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lTg-KD-iCF">
+                                <rect key="frame" x="0.0" y="20" width="600" height="536"/>
+                                <animations/>
                             </imageView>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerX" secondItem="Y5k-Ny-yHK" secondAttribute="centerX" id="3Lk-fB-Qhy"/>
-                            <constraint firstAttribute="trailing" secondItem="Ktw-gf-x3e" secondAttribute="trailing" id="7Nr-gK-uOf"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="baL-kq-Bif" secondAttribute="bottom" id="CGK-UV-WjR"/>
+                            <constraint firstAttribute="trailing" secondItem="lTg-KD-iCF" secondAttribute="trailing" id="08P-KH-18D"/>
+                            <constraint firstItem="lTg-KD-iCF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="8OH-MJ-fpA"/>
+                            <constraint firstItem="lTg-KD-iCF" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Cwo-fP-e22"/>
                             <constraint firstItem="obd-g9-Pyj" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="CzP-Rl-R8Y"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="baL-kq-Bif" secondAttribute="bottom" id="S4L-9Q-YoI"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="Y5k-Ny-yHK" secondAttribute="bottom" id="VaU-PF-8O1"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="Y5k-Ny-yHK" secondAttribute="bottom" id="Xjz-BQ-ugN"/>
-                            <constraint firstItem="Ktw-gf-x3e" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="YhJ-7M-Xhb"/>
-                            <constraint firstItem="baL-kq-Bif" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="a1u-2N-Yqy"/>
-                            <constraint firstItem="Y5k-Ny-yHK" firstAttribute="leading" secondItem="baL-kq-Bif" secondAttribute="trailing" id="aJP-WK-gFY"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="Ktw-gf-x3e" secondAttribute="bottom" id="fUt-U5-CBj"/>
-                            <constraint firstItem="Ktw-gf-x3e" firstAttribute="leading" secondItem="Y5k-Ny-yHK" secondAttribute="trailing" id="ghp-vA-1Gu"/>
+                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="lTg-KD-iCF" secondAttribute="bottom" id="cTN-Zz-wR4"/>
                             <constraint firstAttribute="trailing" secondItem="obd-g9-Pyj" secondAttribute="trailing" id="ine-GT-uuy"/>
-                            <constraint firstItem="baL-kq-Bif" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="lL8-LW-R7T"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="Y5k-Ny-yHK" secondAttribute="bottom" id="oVf-eD-cub"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="Y5k-Ny-yHK" secondAttribute="bottom" id="oaa-6n-4Hj"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="obd-g9-Pyj" secondAttribute="bottom" id="sEL-av-HOK"/>
-                            <constraint firstItem="Y5k-Ny-yHK" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="tFa-D7-8uU"/>
-                            <constraint firstItem="obd-g9-Pyj" firstAttribute="top" secondItem="Ktw-gf-x3e" secondAttribute="bottom" id="xE9-ab-aNG"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="obd-g9-Pyj" secondAttribute="bottom" id="xwZ-bM-dCh"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="S4L-9Q-YoI"/>
-                                <exclude reference="VaU-PF-8O1"/>
-                                <exclude reference="Xjz-BQ-ugN"/>
-                                <exclude reference="fUt-U5-CBj"/>
-                                <exclude reference="oaa-6n-4Hj"/>
-                                <exclude reference="xwZ-bM-dCh"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
-                        <outlet property="left_image" destination="baL-kq-Bif" id="MZU-we-PuZ"/>
-                        <outlet property="right_image" destination="Ktw-gf-x3e" id="vJo-mR-Kxr"/>
+                        <outlet property="changeCreateModeBtn" destination="G6U-zd-5P4" id="pgP-jw-KPJ"/>
+                        <outlet property="imageView" destination="lTg-KD-iCF" id="mFk-Cm-8x3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="305" y="353"/>
         </scene>
     </scenes>
 </document>

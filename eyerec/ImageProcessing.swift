@@ -128,7 +128,7 @@ class ImageProcessing
         , point: CGPoint
         ) -> UIImage
     {
-        var filter = GPUImageGaussianSelectiveBlurFilter();
+        let filter = GPUImageGaussianSelectiveBlurFilter();
         filter.excludeCircleRadius = radius;
         filter.excludeCirclePoint = point;
         return filter.imageByFilteringImage(baseImage);
@@ -151,7 +151,7 @@ class ImageProcessing
     // 輝度
     class func brightnessFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageBrightnessFilter();
+        let filter = GPUImageBrightnessFilter();
         filter.brightness = 0.1;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -160,7 +160,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // brightness : -1.0 ~ 1.0
-        var filter = GPUImageBrightnessFilter();
+        let filter = GPUImageBrightnessFilter();
         filter.brightness = brightness;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -168,7 +168,7 @@ class ImageProcessing
     // 露出(ISO)
     class func exposureFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageExposureFilter();
+        let filter = GPUImageExposureFilter();
         filter.exposure = 0.5;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -177,7 +177,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // exposure : -10.0 ~ 10.0
-        var filter = GPUImageExposureFilter();
+        let filter = GPUImageExposureFilter();
         filter.exposure = exposure;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -185,7 +185,7 @@ class ImageProcessing
     // コントラスト
     class func contrastFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageContrastFilter();
+        let filter = GPUImageContrastFilter();
         filter.contrast = 1.5;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -194,7 +194,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // contrast : 0.0 ~ 4.0
-        var filter = GPUImageContrastFilter();
+        let filter = GPUImageContrastFilter();
         filter.contrast = contrast;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -202,7 +202,7 @@ class ImageProcessing
     // ガンマ値
     class func gammaFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageGammaFilter();
+        let filter = GPUImageGammaFilter();
         filter.gamma = 1.1;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -211,7 +211,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // gamma : 0.0 ~ 3.0
-        var filter = GPUImageGammaFilter();
+        let filter = GPUImageGammaFilter();
         filter.gamma = gamma;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -225,18 +225,18 @@ class ImageProcessing
         
         // colorMatrix : GPUMatrix4x4 画像の各色を変換するために使用
         // intensity : 新たに形質転換色各画素の元の色を置き換える度合い
-        var filter = GPUImageColorMatrixFilter();
+        let filter = GPUImageColorMatrixFilter();
         filter.colorMatrix = matrix;
         filter.intensity = intensity;
         return filter;
     }
     class func colorMatrixFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageColorMatrixFilter();
-        var r : GLfloat = 0.0;
-        var g : GLfloat = 1.0;
-        var b : GLfloat = 0.0;
-        var a : GLfloat = 0.0;
+        let filter = GPUImageColorMatrixFilter();
+        let r : GLfloat = 0.0;
+        let g : GLfloat = 1.0;
+        let b : GLfloat = 0.0;
+        let a : GLfloat = 0.0;
         filter.colorMatrix = GPUMatrix4x4(
             one:    GPUVector4(one: r, two: r, three: r, four: r),
             two:    GPUVector4(one: g, two: g, three: g, four: g),
@@ -271,7 +271,7 @@ class ImageProcessing
         */
 
         // intensity : 新たに形質転換色各画素の元の色を置き換える度合い
-        var filter = GPUImageColorMatrixFilter();
+        let filter = GPUImageColorMatrixFilter();
         filter.colorMatrix = matrix;
         filter.intensity = intensity;
         return filter.imageByFilteringImage(baseImage);
@@ -280,7 +280,7 @@ class ImageProcessing
     // RGB調整
     class func rgbFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageRGBFilter();
+        let filter = GPUImageRGBFilter();
         filter.red = 0.5;
         filter.green = 1.0;
         filter.blue = 0.0;
@@ -293,7 +293,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // red,green,blue : 0.0 ~ 1.0
-        var filter = GPUImageRGBFilter();
+        let filter = GPUImageRGBFilter();
         filter.red = red;
         filter.green = green;
         filter.blue = blue;
@@ -303,7 +303,7 @@ class ImageProcessing
     // 色相変換 角度で指定(180.0で逆になる？)
     class func hueFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageHueFilter();
+        let filter = GPUImageHueFilter();
         filter.hue = 90;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -312,7 +312,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // hue : 180で逆になる？
-        var filter = GPUImageHueFilter();
+        let filter = GPUImageHueFilter();
         filter.hue = hue;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -320,20 +320,20 @@ class ImageProcessing
     // トーンカーブ##
     class func toneCurveFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageToneCurveFilter();
-        var rArray = NSArray(arrayLiteral:
+        let filter = GPUImageToneCurveFilter();
+        let rArray = NSArray(arrayLiteral:
             NSValue(CGPoint: CGPointMake(0.0, 0.0)),
             NSValue(CGPoint: CGPointMake(0.25, 0.75)),
             NSValue(CGPoint: CGPointMake(0.5, 0.5)),
             NSValue(CGPoint: CGPointMake(0.75, 0.25)),
             NSValue(CGPoint: CGPointMake(1.0, 1.0)));
-        var gArray = NSArray(arrayLiteral:
+        let gArray = NSArray(arrayLiteral:
             NSValue(CGPoint: CGPointMake(1.0, 1.0)),
             NSValue(CGPoint: CGPointMake(0.25, 0.75)),
             NSValue(CGPoint: CGPointMake(0.5, 0.5)),
             NSValue(CGPoint: CGPointMake(0.75, 0.25)),
             NSValue(CGPoint: CGPointMake(0.0, 0.0)));
-        var bArray = NSArray(arrayLiteral:
+        let bArray = NSArray(arrayLiteral:
             NSValue(CGPoint: CGPointMake(1.0, 1.0)),
             NSValue(CGPoint: CGPointMake(0.25, 0.75)),
             NSValue(CGPoint: CGPointMake(0.5, 0.5)),
@@ -353,7 +353,7 @@ class ImageProcessing
         // redPoints,greenPoints,bluePoints : NSArray from CGPoint
         // CGPoint : (0.0, 0.0) ~ (1.0, 1.0)
         // NSArray Default : [(0.0, 0.0), (0.5, 0.5), (1.0, 1.0)]
-        var filter = GPUImageToneCurveFilter();
+        let filter = GPUImageToneCurveFilter();
         filter.redControlPoints = redPoints as [AnyObject];
         filter.greenControlPoints = greenPoints as [AnyObject];
         filter.blueControlPoints = bluePoints as [AnyObject];
@@ -365,7 +365,7 @@ class ImageProcessing
     {
         // CGPoint : (0.0, 0.0) ~ (1.0, 1.0)
         // NSArray Default : [(0.0, 0.0), (0.5, 0.5), (1.0, 1.0)]
-        var filter = GPUImageToneCurveFilter();
+        let filter = GPUImageToneCurveFilter();
         filter.rgbCompositeControlPoints = points as [AnyObject];
         return filter.imageByFilteringImage(baseImage);
     }
@@ -376,7 +376,7 @@ class ImageProcessing
         , rgbCompositePoints: NSArray
         ) -> UIImage
     {
-        var filter = GPUImageToneCurveFilter();
+        let filter = GPUImageToneCurveFilter();
         filter.redControlPoints = redPoints as [AnyObject];
         filter.greenControlPoints = greenPoints as [AnyObject];
         filter.blueControlPoints = bluePoints as [AnyObject];
@@ -387,7 +387,7 @@ class ImageProcessing
     // ハイライト調整
     class func highlightShadowFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageHighlightShadowFilter();
+        let filter = GPUImageHighlightShadowFilter();
         filter.shadows = 0.2;
         filter.highlights = 0.8;
         return filter.imageByFilteringImage(baseImage);
@@ -399,7 +399,7 @@ class ImageProcessing
     {
         // shadows : 0.0 ~ 1.0 Default 0.0
         // highlights : 0.0 ~ 1.0 Default 1.0
-        var filter = GPUImageHighlightShadowFilter();
+        let filter = GPUImageHighlightShadowFilter();
         filter.shadows = shadows;
         filter.highlights = highlights;
         return filter.imageByFilteringImage(baseImage);
@@ -416,6 +416,10 @@ class ImageProcessing
     }
     
     // グレースケール変換
+    class func grayscaleFilter() -> GPUImageGrayscaleFilter
+    {
+        return GPUImageGrayscaleFilter();
+    }
     class func grayscaleFilter(baseImage: UIImage) -> UIImage
     {
         return GPUImageGrayscaleFilter().imageByFilteringImage(baseImage);
@@ -433,7 +437,7 @@ class ImageProcessing
     {
         // 各画素の輝度に基づいて、単色バージョンに画像を変換する
         // firstColor, secondColor : GPUVector4(one: GLfloat, two: GLfloat, three: GLfloat, four: GLfloat)
-        var filter = GPUImageFalseColorFilter();
+        let filter = GPUImageFalseColorFilter();
         filter.firstColor = firstColor;
         filter.secondColor = secondColor;
         return filter.imageByFilteringImage(baseImage);
@@ -449,7 +453,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // intensity : 0.0 ~ 1.0
-        var filter = GPUImageSepiaFilter();
+        let filter = GPUImageSepiaFilter();
         filter.intensity = intensity;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -457,13 +461,13 @@ class ImageProcessing
     // アルファチャンネル調整
     class func opacityFilter() -> GPUImageOpacityFilter
     {
-        var filter = GPUImageOpacityFilter();
+        let filter = GPUImageOpacityFilter();
         filter.opacity = 0.5;
         return filter;
     }
     class func opacityFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageOpacityFilter();
+        let filter = GPUImageOpacityFilter();
         filter.opacity = 0.5;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -472,7 +476,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // opacity : 0.0 ~ 1.0
-        var filter = GPUImageOpacityFilter();
+        let filter = GPUImageOpacityFilter();
         filter.opacity = opacity;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -481,6 +485,12 @@ class ImageProcessing
     class func luminanceThresholdFilter() -> GPUImageLuminanceThresholdFilter
     {
         return GPUImageLuminanceThresholdFilter();
+    }
+    class func luminanceThresholdFilter(threshold: CGFloat) -> GPUImageLuminanceThresholdFilter
+    {
+        let filter = GPUImageLuminanceThresholdFilter();
+        filter.threshold = threshold;
+        return filter;
     }
     class func luminanceThresholdFilter(baseImage: UIImage) -> UIImage
     {
@@ -491,7 +501,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // threshold : 0.0 ~ 1.0 Default 0.5
-        var filter = GPUImageLuminanceThresholdFilter();
+        let filter = GPUImageLuminanceThresholdFilter();
         filter.threshold = threshold;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -511,7 +521,7 @@ class ImageProcessing
     {
         // これは、閾値が継続的にシーンの平均輝度に基づいて調整される閾値化操作を適用する
         // threshold : 0.0 ~ 1.0 Default 0.5
-        var filter = GPUImageAverageLuminanceThresholdFilter();
+        let filter = GPUImageAverageLuminanceThresholdFilter();
         filter.thresholdMultiplier = thresholdMultiplier;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -531,7 +541,7 @@ class ImageProcessing
         //t = CGAffineTransformMakeScale(0.75, 0.75); //　縮小
         //t = CGAffineTransformTranslate(t, 0, 0.5);  // 移動
         
-        var filter = GPUImageTransformFilter();
+        let filter = GPUImageTransformFilter();
         filter.affineTransform = transform;
         filter.ignoreAspectRatio = ignoreAspectRatio;
         return filter;
@@ -539,7 +549,7 @@ class ImageProcessing
 
     class func transform2DFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageTransformFilter();
+        let filter = GPUImageTransformFilter();
         var transform: CGAffineTransform;
         transform = CGAffineTransformMakeScale(0.75, 0.75);
         transform = CGAffineTransformTranslate(transform, 0, 0.5);
@@ -557,7 +567,7 @@ class ImageProcessing
         //t = CGAffineTransformMakeScale(0.75, 0.75); //　縮小
         //t = CGAffineTransformTranslate(t, 0, 0.5);  // 移動
         
-        var filter = GPUImageTransformFilter();
+        let filter = GPUImageTransformFilter();
         filter.affineTransform = transform;
         filter.ignoreAspectRatio = ignoreAspectRatio;
         return filter.imageByFilteringImage(baseImage);
@@ -566,7 +576,7 @@ class ImageProcessing
     // 3D変形
     class func transform3DFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageTransformFilter();
+        let filter = GPUImageTransformFilter();
         var transform = CATransform3DIdentity;
         transform.m34 = 0.4;
         transform.m33 = 0.4;
@@ -586,7 +596,7 @@ class ImageProcessing
         //t.m33 = 0.4;
         //t = CATransform3DRotate(t, 0.75, 1.0, 0.0, 0.0);
 
-        var filter = GPUImageTransformFilter();
+        let filter = GPUImageTransformFilter();
         filter.transform3D = transform;
         filter.ignoreAspectRatio = ignoreAspectRatio;
         return filter.imageByFilteringImage(baseImage);
@@ -595,7 +605,7 @@ class ImageProcessing
         , ignoreAspectRatio: Bool
         ) -> GPUImageTransformFilter
     {
-        var filter = GPUImageTransformFilter();
+        let filter = GPUImageTransformFilter();
         filter.transform3D = transform;
         filter.ignoreAspectRatio = ignoreAspectRatio;
         return filter;
@@ -604,11 +614,11 @@ class ImageProcessing
     // クリッピング
     class func cropFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageCropFilter();
+        let filter = GPUImageCropFilter();
         filter.cropRegion = CGRectMake(0.25, 0.25, 0.5, 0.5);
 
         // GPUImageCropFilterのforceProcessingAtSizeが動かないので
-        var tmp = GPUImageTransformFilter();
+        let tmp = GPUImageTransformFilter();
         tmp.forceProcessingAtSize(baseImage.size);
         return tmp.imageByFilteringImage(filter.imageByFilteringImage(baseImage));
     }
@@ -616,7 +626,7 @@ class ImageProcessing
         , cropRegion: CGRect
         ) -> UIImage
     {
-        var filter = GPUImageCropFilter();
+        let filter = GPUImageCropFilter();
         filter.cropRegion = cropRegion;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -630,7 +640,7 @@ class ImageProcessing
     // シャープネス
     class func sharpenFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageSharpenFilter();
+        let filter = GPUImageSharpenFilter();
         filter.sharpness = 0.5;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -639,7 +649,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // sharpness : -4.0 ~ 4.0 Default 0.0
-        var filter = GPUImageSharpenFilter();
+        let filter = GPUImageSharpenFilter();
         filter.sharpness = sharpness;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -647,7 +657,7 @@ class ImageProcessing
     // アンシャープマスク
     class func unsharpMaskFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageUnsharpMaskFilter();
+        let filter = GPUImageUnsharpMaskFilter();
         filter.blurRadiusInPixels = 2.0;
         filter.intensity = 2.0;
         return filter.imageByFilteringImage(baseImage);
@@ -659,7 +669,7 @@ class ImageProcessing
     {
         // blurRadiusInPixels : 0.0 ~ Default 1.0
         // intensity : 0.0 ~ Default 1.0
-        var filter = GPUImageUnsharpMaskFilter();
+        let filter = GPUImageUnsharpMaskFilter();
         filter.blurRadiusInPixels = blurSize;
         filter.intensity = intensity;
         return filter.imageByFilteringImage(baseImage);
@@ -668,7 +678,7 @@ class ImageProcessing
     // ガウスぼかし
     class func gaussianBlurFilter() -> GPUImageGaussianBlurFilter
     {
-        var filter = GPUImageGaussianBlurFilter();
+        let filter = GPUImageGaussianBlurFilter();
         filter.blurRadiusInPixels = 2.0;
         return filter;
     }
@@ -676,13 +686,13 @@ class ImageProcessing
         ) -> GPUImageGaussianBlurFilter
     {
         // blurSize : 0.0 ~ Default 1.0
-        var filter = GPUImageGaussianBlurFilter();
+        let filter = GPUImageGaussianBlurFilter();
         filter.blurRadiusInPixels = blurSize;
         return filter;
     }
     class func gaussianBlurFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageGaussianBlurFilter();
+        let filter = GPUImageGaussianBlurFilter();
         filter.blurRadiusInPixels = 2.0;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -691,7 +701,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // blurSize : 0.0 ~ Default 1.0
-        var filter = GPUImageGaussianBlurFilter();
+        let filter = GPUImageGaussianBlurFilter();
         filter.blurRadiusInPixels = blurSize;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -699,7 +709,7 @@ class ImageProcessing
     // 円形フォーカス的ぼかし
     class func gaussianSelectiveBlurFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageGaussianSelectiveBlurFilter();
+        let filter = GPUImageGaussianSelectiveBlurFilter();
         filter.blurRadiusInPixels = 5.0;
         filter.excludeCircleRadius = 0.4;
         filter.excludeCirclePoint = CGPointMake(0.5, 0.5);
@@ -720,7 +730,7 @@ class ImageProcessing
         // point : (0.0, 0.0) ~ (1.0, 1.0) ぼかし除外(フォーカス)円の中心位置
         // exBlurSize : 0.0 ~ フォーカス範囲とぼかし範囲の境界をどれくらいの幅にするか
         // aspectRatio : Default 1.0 円の歪み(0.0だと縦長？よくわからない)
-        var filter = GPUImageGaussianSelectiveBlurFilter();
+        let filter = GPUImageGaussianSelectiveBlurFilter();
         filter.blurRadiusInPixels = blurSize;
         filter.excludeCircleRadius = radius;
         filter.excludeCirclePoint = point;
@@ -732,7 +742,7 @@ class ImageProcessing
     // チルトシフト(上下ぼかし)
     class func tiltShiftFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageTiltShiftFilter();
+        let filter = GPUImageTiltShiftFilter();
         filter.blurRadiusInPixels = 3.0;
         filter.topFocusLevel = 0.4;
         filter.bottomFocusLevel = 0.6;
@@ -750,7 +760,7 @@ class ImageProcessing
         // topFocusLevel : Default 0.4 焦点領域上部 bottomFocusLeveより低く設定
         // bottomFocusLevel : Default 0.6 焦点領域下部 topFocusLevelより高く設定
         // focusFallOffRate : Default 0.2 画像が合焦領域から離れてぼやけを取得する速度(?)
-        var filter = GPUImageTiltShiftFilter();
+        let filter = GPUImageTiltShiftFilter();
         filter.blurRadiusInPixels = blurSize;
         filter.topFocusLevel = topFocusLevel;
         filter.bottomFocusLevel = bottomFocusLevel;
@@ -761,7 +771,7 @@ class ImageProcessing
     // 平滑化ぼかし?
     class func boxBlurFilter(baseImage :UIImage) -> UIImage
     {
-        var filter = GPUImageBoxBlurFilter();
+        let filter = GPUImageBoxBlurFilter();
         filter.blurRadiusInPixels = 2.0;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -769,7 +779,7 @@ class ImageProcessing
         , blurSize: CGFloat
         ) -> UIImage
     {
-        var filter = GPUImageBoxBlurFilter();
+        let filter = GPUImageBoxBlurFilter();
         filter.blurRadiusInPixels = blurSize;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -777,8 +787,8 @@ class ImageProcessing
     // 3x3の畳み込みカーネル##
     class func convolution3x3Filter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImage3x3ConvolutionFilter();
-        var kernel = GPUMatrix3x3(
+        let filter = GPUImage3x3ConvolutionFilter();
+        let kernel = GPUMatrix3x3(
             // 輪郭強調のサンプル
             one:    GPUVector3(one: 0, two: 1, three: 0),
             two:    GPUVector3(one: 1, two: -4, three: 1),
@@ -794,7 +804,7 @@ class ImageProcessing
         // 行列は、左上ピクセルの幸福のone.oneと右下のthree.threeで、行優先順に指定されている。
         // 行列の値が1.0にならない場合は、イメージが明るくまたは暗くすることができた。
         // kernel : GPUMatrix3x3(one: GPUVector3, two: GPUVector3, three: GPUVector3);
-        var filter = GPUImage3x3ConvolutionFilter();
+        let filter = GPUImage3x3ConvolutionFilter();
         filter.convolutionKernel = kernel;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -815,7 +825,7 @@ class ImageProcessing
     {
         // texelWidth : 0.001くらいが丁度いい
         // texelHeight : 0.001くらいが丁度いい
-        var filter = GPUImageSobelEdgeDetectionFilter();
+        let filter = GPUImageSobelEdgeDetectionFilter();
         filter.texelWidth = texelWidth;
         filter.texelHeight = texelHeight;
         return filter.imageByFilteringImage(baseImage);
@@ -840,7 +850,7 @@ class ImageProcessing
         // upperThreshold : Default 0.4 エッジとして検出する閾値
         // lowerThreshold : Default 0.1 エッジとして検出しない閾値
         
-        var filter = GPUImageCannyEdgeDetectionFilter();
+        let filter = GPUImageCannyEdgeDetectionFilter();
         filter.texelWidth = texelWidth;
         filter.texelHeight = texelHeight;
         filter.blurRadiusInPixels = blurSize;
@@ -863,7 +873,7 @@ class ImageProcessing
         // blurSize : Default 1.0 コーナー検出の実装の一部として適用されるぼかしの相対的な大きさ
         // sensitivity : Default 5.0 内部スケーリング係数は、フィルタで生成cornernessマップのダイナミックレンジを調整するために適用
         // threshold : コーナーとして検出される閾値。
-        var filter = GPUImageHarrisCornerDetectionFilter();
+        let filter = GPUImageHarrisCornerDetectionFilter();
         filter.blurRadiusInPixels = blurSize;
         filter.sensitivity = sensitivity;
         filter.threshold = threshold;
@@ -873,7 +883,7 @@ class ImageProcessing
     // 頂点検出 Noble法
     class func nobleCornerDetectionFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageNobleCornerDetectionFilter();
+        let filter = GPUImageNobleCornerDetectionFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     class func nobleCornerDetectionFilter(baseImage: UIImage
@@ -885,7 +895,7 @@ class ImageProcessing
         // blurSize : Default 1.0 コーナー検出の実装の一部として適用されるぼかしの相対的な大きさ
         // sensitivity : Default 5.0 内部スケーリング係数は、フィルタで生成cornernessマップのダイナミックレンジを調整するために適用
         // threshold : コーナーとして検出される閾値。
-        var filter = GPUImageNobleCornerDetectionFilter();
+        let filter = GPUImageNobleCornerDetectionFilter();
         filter.blurRadiusInPixels = blurSize;
         filter.sensitivity = sensitivity;
         filter.threshold = threshold;
@@ -895,7 +905,7 @@ class ImageProcessing
     // 頂点検出 ShiTomasi法
     class func shiTomasiFeatureDetectionFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageShiTomasiFeatureDetectionFilter();
+        let filter = GPUImageShiTomasiFeatureDetectionFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     class func shiTomasiFeatureDetectionFilter(baseImage: UIImage
@@ -907,7 +917,7 @@ class ImageProcessing
         // blurSize : Default 1.0 コーナー検出の実装の一部として適用されるぼかしの相対的な大きさ
         // sensitivity : Default 5.0 内部スケーリング係数は、フィルタで生成cornernessマップのダイナミックレンジを調整するために適用
         // threshold : コーナーとして検出される閾値。
-        var filter = GPUImageShiTomasiFeatureDetectionFilter();
+        let filter = GPUImageShiTomasiFeatureDetectionFilter();
         filter.blurRadiusInPixels = blurSize;
         filter.sensitivity = sensitivity;
         filter.threshold = threshold;
@@ -917,7 +927,7 @@ class ImageProcessing
     // ハリスのコーナー検出フィルタの一部として使用される(で、どういう効果なの？)
     class func nonMaximumSuppressionFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageNonMaximumSuppressionFilter();
+        let filter = GPUImageNonMaximumSuppressionFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -925,7 +935,7 @@ class ImageProcessing
     // 使ってみたら、青背景に赤と水色で輪郭線が浮き出てきたけど。。。
     class func xyDerivativeFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageXYDerivativeFilter();
+        let filter = GPUImageXYDerivativeFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -934,7 +944,7 @@ class ImageProcessing
         , crosshairWidth: CGFloat
         ) -> UIImage
     {
-        var filter = GPUImageCrosshairGenerator();
+        let filter = GPUImageCrosshairGenerator();
         filter.crosshairWidth = crosshairWidth;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -943,7 +953,7 @@ class ImageProcessing
     // 何度か繰り返し適用したら、重なりのあるドット絵みたいになった！
     class func dilationFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageDilationFilter();
+        let filter = GPUImageDilationFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -951,7 +961,7 @@ class ImageProcessing
     // 何度か繰り返し適用したら、重なりのあるドット絵みたいになった！
     class func rgbDilationFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageRGBDilationFilter();
+        let filter = GPUImageRGBDilationFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -959,7 +969,7 @@ class ImageProcessing
     // 何度か繰り返し適用したら、油絵的な感じに滲んだ！
     class func erosionFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageErosionFilter();
+        let filter = GPUImageErosionFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -967,7 +977,7 @@ class ImageProcessing
     // 何度か繰り返し適用したら、油絵的な感じに滲んだ！
     class func rgbErosionFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageRGBErosionFilter();
+        let filter = GPUImageRGBErosionFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -975,7 +985,7 @@ class ImageProcessing
     // (使ってみたらグレースケールっぽい画像になったけど。。。)
     class func openingFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageOpeningFilter();
+        let filter = GPUImageOpeningFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -983,7 +993,7 @@ class ImageProcessing
     // (使ってみたら何が変わったかかわからない画像になったけど。。。)
     class func rgbOpeningFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageRGBOpeningFilter();
+        let filter = GPUImageRGBOpeningFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -991,7 +1001,7 @@ class ImageProcessing
     // (使ってみたらグレースケールっぽい画像になったけど。。。)
     class func closingFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageClosingFilter();
+        let filter = GPUImageClosingFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
@@ -999,14 +1009,14 @@ class ImageProcessing
     // (使ってみたら何が変わったかかわからない画像になったけど。。。)
     class func rgbClosingFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageRGBClosingFilter();
+        let filter = GPUImageRGBClosingFilter();
         return filter.imageByFilteringImage(baseImage);
     }
     
     // ローパスフィルタ
     class func lowPassFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageLowPassFilter();
+        let filter = GPUImageLowPassFilter();
         filter.filterStrength = 0.2;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1015,7 +1025,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // filterStrength : 0.0 ~ 1.0 Default 0.5
-        var filter = GPUImageLowPassFilter();
+        let filter = GPUImageLowPassFilter();
         filter.filterStrength = filterStrength;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1023,7 +1033,7 @@ class ImageProcessing
     // ハイパスフィルタ
     class func highPassFilter(baseImage: UIImage) -> UIImage
     {
-        var filter = GPUImageHighPassFilter();
+        let filter = GPUImageHighPassFilter();
         filter.filterStrength = 0.2;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1032,7 +1042,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // filterStrength : 0.0 ~ 1.0 Default 0.5
-        var filter = GPUImageHighPassFilter();
+        let filter = GPUImageHighPassFilter();
         filter.filterStrength = filterStrength;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1047,7 +1057,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // lowPassFilterStrength : 0.0 ~ 1.0 Default 0.5
-        var filter = GPUImageMotionDetector();
+        let filter = GPUImageMotionDetector();
         filter.lowPassFilterStrength = lowPassFilterStrength;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1062,12 +1072,12 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageChromaKeyFilter();
+        let filter = GPUImageChromaKeyFilter();
         filter.thresholdSensitivity = 0.4;
         filter.smoothing = 0.1;
 
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1085,12 +1095,12 @@ class ImageProcessing
         // これは単に第二の画像を取り込むとしないマッチング色について第二の画像にブレンディングの所与の色を透明に変わり。
         // thresholdSensitivity : Default 0.4 どれだけの近さを対象にするか
         // smoothing : Default 0.1 どのくらいスムーズに色変えするか
-        var filter = GPUImageChromaKeyFilter();
+        let filter = GPUImageChromaKeyFilter();
         filter.thresholdSensitivity = thresholdSensitivity;
         filter.smoothing = smoothing;
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1105,12 +1115,12 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageChromaKeyBlendFilter();
+        let filter = GPUImageChromaKeyBlendFilter();
         filter.thresholdSensitivity = 0.4;
         filter.smoothing = 0.1;
 
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1126,12 +1136,12 @@ class ImageProcessing
     {
         // thresholdSensitivity : Default 0.4 どれだけの近さを対象にするか
         // smoothing : Default 0.1 どのくらいスムーズに色変えするか
-        var filter = GPUImageChromaKeyBlendFilter();
+        let filter = GPUImageChromaKeyBlendFilter();
         filter.thresholdSensitivity = thresholdSensitivity;
         filter.smoothing = smoothing;
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1145,11 +1155,11 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageDissolveBlendFilter();
+        let filter = GPUImageDissolveBlendFilter();
         filter.mix = 0.5;
 
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1163,11 +1173,11 @@ class ImageProcessing
         ) -> UIImage
     {
         // mix : 0.0 ~ 1.0 Default 0.5 どの程度上書きを強めるか
-        var filter = GPUImageDissolveBlendFilter();
+        let filter = GPUImageDissolveBlendFilter();
         filter.mix = mix;
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1181,10 +1191,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageMultiplyBlendFilter();
+        let filter = GPUImageMultiplyBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1198,10 +1208,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageAddBlendFilter();
+        let filter = GPUImageAddBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1215,10 +1225,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageDivideBlendFilter();
+        let filter = GPUImageDivideBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1232,10 +1242,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageOverlayBlendFilter();
+        let filter = GPUImageOverlayBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1249,10 +1259,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageDarkenBlendFilter();
+        let filter = GPUImageDarkenBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1266,10 +1276,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageLightenBlendFilter();
+        let filter = GPUImageLightenBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1283,10 +1293,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageColorBurnBlendFilter();
+        let filter = GPUImageColorBurnBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1300,10 +1310,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageColorDodgeBlendFilter();
+        let filter = GPUImageColorDodgeBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1317,10 +1327,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageScreenBlendFilter();
+        let filter = GPUImageScreenBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1334,10 +1344,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageExclusionBlendFilter();
+        let filter = GPUImageExclusionBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1351,10 +1361,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageDifferenceBlendFilter();
+        let filter = GPUImageDifferenceBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1368,10 +1378,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageHardLightBlendFilter();
+        let filter = GPUImageHardLightBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1385,10 +1395,10 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageSoftLightBlendFilter();
+        let filter = GPUImageSoftLightBlendFilter();
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1402,11 +1412,11 @@ class ImageProcessing
         , overlayImage: UIImage
         ) -> UIImage
     {
-        var filter = GPUImageAlphaBlendFilter();
+        let filter = GPUImageAlphaBlendFilter();
         filter.mix = 1.0;
 
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1420,11 +1430,11 @@ class ImageProcessing
         ) -> UIImage
     {
         // mix : 0.0 ~ 1.0 Default 1.0
-        var filter = GPUImageAlphaBlendFilter();
+        let filter = GPUImageAlphaBlendFilter();
         filter.mix = mix;
         
-        var inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
-        var overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
+        let inputPicture = GPUImagePicture(CGImage: baseImage.CGImage, smoothlyScaleOutput: true);
+        let overlayPicture = GPUImagePicture(CGImage: overlayImage.CGImage, smoothlyScaleOutput: true);
         inputPicture.addTarget(filter);
         overlayPicture.addTarget(filter);
         inputPicture.processImage();
@@ -1448,7 +1458,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // fractionalWidthOfAPixel : 0.0 ~ 1.0 Default 0.05 ドットの荒さ 0.05は結構荒い
-        var filter = GPUImagePixellateFilter();
+        let filter = GPUImagePixellateFilter();
         filter.fractionalWidthOfAPixel = fractionalWidthOfAPixel;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1465,7 +1475,7 @@ class ImageProcessing
     {
         // center : 0.0 ~ 1.0 集中線の中心点
         // pixelSize : 0.0 ~ 1.0 くらい　ドットの荒さ
-        var filter = GPUImagePolarPixellateFilter();
+        let filter = GPUImagePolarPixellateFilter();
         filter.center = center;
         filter.pixelSize = pixelSize;
         return filter.imageByFilteringImage(baseImage);
@@ -1483,7 +1493,7 @@ class ImageProcessing
     {
         // fractionalWidthOfAPixel : 0.0 ~ 1.0 Default 0.05 ドットの荒さ 0.05は結構荒い
         // dotScaling : 0.0 ~ 1.0 Default 0.9 ドットのどれくらいを使用して丸にするか
-        var filter = GPUImagePolkaDotFilter();
+        let filter = GPUImagePolkaDotFilter();
         filter.fractionalWidthOfAPixel = fractionalWidthOfAPixel;
         filter.dotScaling = dotScaling;
         return filter.imageByFilteringImage(baseImage);
@@ -1499,7 +1509,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // fractionalWidthOfAPixel : 0.0 ~ 1.0 Default 0.05 ドットの荒さ 0.05は結構荒い
-        var filter = GPUImageHalftoneFilter();
+        let filter = GPUImageHalftoneFilter();
         filter.fractionalWidthOfAPixel = fractionalWidthOfAPixel;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1516,7 +1526,7 @@ class ImageProcessing
     {
         // crossHatchSpacing : Default 0.03 格子の密度
         // lineWidth : Default 0.003 格子の幅
-        var filter = GPUImageCrosshatchFilter();
+        let filter = GPUImageCrosshatchFilter();
         filter.crossHatchSpacing = crossHatchSpacing;
         filter.lineWidth = lineWidth;
         return filter.imageByFilteringImage(baseImage);
@@ -1534,7 +1544,7 @@ class ImageProcessing
     {
         // texelWidth : 0.0005
         // texelHeight : 0.0005
-        var filter = GPUImageSketchFilter();
+        let filter = GPUImageSketchFilter();
         filter.texelWidth = texelWidth;
         filter.texelHeight = texelHeight;
         return filter.imageByFilteringImage(baseImage);
@@ -1556,7 +1566,7 @@ class ImageProcessing
         // texelHeight : 0.0005
         // threshold : 0.0 ~ 1.0 Default 0.2 ソーベルフィルタの感度
         // quantizationLevels : Default 10.0 最終的なカラーレベル
-        var filter = GPUImageToonFilter();
+        let filter = GPUImageToonFilter();
         filter.texelWidth = texelWidth;
         filter.texelHeight = texelHeight;
         filter.threshold = threshold;
@@ -1587,7 +1597,7 @@ class ImageProcessing
         // blurSize : 0.0 ~ Default 0.5 ノイズ低減のぼかし度合い
         // threshold : 0.0 ~ 1.0 Default 0.2 ソーベルフィルタの感度
         // quantizationLevels : Default 10.0 最終的なカラーレベル
-        var filter = GPUImageSmoothToonFilter();
+        let filter = GPUImageSmoothToonFilter();
         filter.texelWidth = texelWidth;
         filter.texelHeight = texelHeight;
         filter.threshold = threshold;
@@ -1605,7 +1615,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // intensity : 0.0 ~ 4.0 Default 1.0
-        var filter = GPUImageEmbossFilter();
+        let filter = GPUImageEmbossFilter();
         filter.intensity = intensity;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1620,7 +1630,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // colorLevels : 1 ~ 256 Default 10
-        var filter = GPUImagePosterizeFilter();
+        let filter = GPUImagePosterizeFilter();
         filter.colorLevels = colorLevels;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1639,7 +1649,7 @@ class ImageProcessing
         // radius : Default 0.5
         // center : (0.0, 0,0) ~ (1.0, 1.0)
         // angle : Default 1.0
-        var filter = GPUImageSwirlFilter();
+        let filter = GPUImageSwirlFilter();
         filter.radius = radius;
         filter.center = center;
         filter.angle = angle;
@@ -1660,7 +1670,7 @@ class ImageProcessing
         // radius : Default 0.25
         // center : (0.0, 0,0) ~ (1.0, 1.0)
         // scale : -1.0 ~ 1.0 Default 0.5
-        var filter = GPUImageBulgeDistortionFilter();
+        let filter = GPUImageBulgeDistortionFilter();
         filter.radius = radius;
         filter.center = center;
         filter.scale = scale;
@@ -1681,7 +1691,7 @@ class ImageProcessing
         // radius : Default 1.0
         // center : (0.0, 0,0) ~ (1.0, 1.0)
         // scale : -2.0 ~ 2.0 Default 1.0
-        var filter = GPUImagePinchDistortionFilter();
+        let filter = GPUImagePinchDistortionFilter();
         filter.radius = radius;
         filter.center = center;
         filter.scale = scale;
@@ -1698,7 +1708,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // center : (0.0, 0,0) ~ (1.0, 1.0)
-        var filter = GPUImageStretchDistortionFilter();
+        let filter = GPUImageStretchDistortionFilter();
         filter.center = center;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1719,7 +1729,7 @@ class ImageProcessing
         // vignetteColor : GPUVector3(one: 1.0, two: 1.0, three: 1.0)で白
         // vignetteStart : 0.1 くらいがちょうどよかった
         // vignetteEnd : 0.4 くらいがちょうどよかった
-        var filter = GPUImageVignetteFilter();
+        let filter = GPUImageVignetteFilter();
         filter.vignetteCenter = vignetteCenter;
         filter.vignetteColor = vignetteColor;
         filter.vignetteStart = vignetteStart;
@@ -1740,7 +1750,7 @@ class ImageProcessing
         ) -> UIImage
     {
         // radius : Default 4
-        var filter = GPUImageKuwaharaFilter();
+        let filter = GPUImageKuwaharaFilter();
         filter.radius = radius;
         return filter.imageByFilteringImage(baseImage);
     }
@@ -1761,7 +1771,7 @@ class ImageProcessing
         ) -> LowPassMoveFilter
     {
         // lowPassFilterStrength : 0.0 ~ 1.0 Default 0.5
-        var filter = LowPassMoveFilter();
+        let filter = LowPassMoveFilter();
         filter.lowPassFilterStrength = lowPassFilterStrength;
         return filter;
     }
@@ -1774,40 +1784,10 @@ class ImageProcessing
         ) -> UIImage
     {
         // lowPassFilterStrength : 0.0 ~ 1.0 Default 0.5
-        var filter = LowPassMoveFilter();
+        let filter = LowPassMoveFilter();
         filter.lowPassFilterStrength = lowPassFilterStrength;
         return filter.imageByFilteringImage(baseImage);
     }
-    
-    // ゾーベルエッジ検出で検出したエッジを右にずらす(立体視用テスト)
-    class func sobelEdgeMoveFilter() -> SobelEdgeMoveFilter
-    {
-        return SobelEdgeMoveFilter();
-    }
-    class func sobelEdgeMoveFilter(texelWidth: CGFloat, texelHeight: CGFloat) -> SobelEdgeMoveFilter
-    {
-        // texelWidth : 0.001くらいが丁度いい
-        // texelHeight : 0.001くらいが丁度いい
-        var filter = SobelEdgeMoveFilter();
-        filter.texelWidth = texelWidth;
-        filter.texelHeight = texelHeight;
-        return filter;
-    }
-    class func sobelEdgeMoveFilter(baseImage: UIImage) -> UIImage
-    {
-        return SobelEdgeMoveFilter().imageByFilteringImage(baseImage);
-    }
-    class func sobelEdgeMoveFilter(baseImage: UIImage, texelWidth: CGFloat, texelHeight: CGFloat) -> UIImage
-    {
-        // texelWidth : 0.001くらいが丁度いい
-        // texelHeight : 0.001くらいが丁度いい
-        var filter = SobelEdgeMoveFilter();
-        filter.texelWidth = texelWidth;
-        filter.texelHeight = texelHeight;
-        return filter.imageByFilteringImage(baseImage);
-    }
-
-
     
     
     //
@@ -1818,7 +1798,7 @@ class ImageProcessing
     //フィルタグループを作る
     class func groupFilter(filters: [GPUImageFilter]) -> GPUImageFilterGroup
     {
-        var group = GPUImageFilterGroup();
+        let group = GPUImageFilterGroup();
         for i in 0 ..< filters.count {
             let f = filters[i];
             group.addFilter(f);
@@ -1837,7 +1817,7 @@ class ImageProcessing
     }
     class func groupFilter(baseGroup: GPUImageFilterGroup, filters: [GPUImageFilter]) -> GPUImageFilterGroup
     {
-        var group = baseGroup;
+        let group = baseGroup;
         var fcount = group.filterCount();
         for i in 0 ..< filters.count {
             let f = filters[i];
@@ -1861,7 +1841,7 @@ class ImageProcessing
     }
     class func groupFilter(baseImage: UIImage, filters: [GPUImageFilter]) -> UIImage
     {
-        var group = GPUImageFilterGroup();
+        let group = GPUImageFilterGroup();
         for i in 0 ..< filters.count {
             let f = filters[i];
             group.addFilter(f);
@@ -1881,7 +1861,7 @@ class ImageProcessing
     }
     class func groupFilter(baseImage: UIImage, baseGroup: GPUImageFilterGroup, filters: [GPUImageFilter]) -> UIImage
     {
-        var group = baseGroup;
+        let group = baseGroup;
         var fcount = group.filterCount();
         for i in 0 ..< filters.count {
             let f = filters[i];
@@ -1908,7 +1888,7 @@ class ImageProcessing
         var group = baseGroup;
         var fcount = group.filterCount();
         for i in 0 ..< groups.count {
-            var gfcount = groups[i].filterCount();
+            let gfcount = groups[i].filterCount();
             for fi in 0 ..< gfcount {
                 if groups[i].filterAtIndex(fi) is GPUImageFilterGroup {
                     let g = groups[i].filterAtIndex(fi) as! GPUImageFilterGroup;
