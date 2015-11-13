@@ -14,21 +14,21 @@ class ViewController: UIViewController
     
     @IBOutlet weak var changeCreateModeBtn: UIBarButtonItem!
     
-    enum CreateMode: Int {
-        case magiceye
-        case stereogram
-        
-        // 各列挙値に対して文字列で返す
-        func toString () -> String {
-            switch self{
-            case .magiceye:
-                return "MagicEye"
-            case .stereogram:
-                return "Stereogram"
-            }
+    var createMode = Stereogram.ColorPattern.p1;
+    func createModeString(p: Stereogram.ColorPattern) -> String {
+        switch p{
+        case .random1:
+            return "MagicEye"
+        case .p1:
+            return "Stereogram1"
+        case .p2:
+            return "Stereogram2"
+        case .p3:
+            return "Stereogram3"
+        case .p4:
+            return "Stereogram4"
         }
     }
-    var createMode = CreateMode.stereogram;
     
     var original: UIImage? = nil;
     var stereogram: UIImage? = nil;
@@ -68,8 +68,8 @@ class ViewController: UIViewController
 
         myActivityIndicator.center = imageView.center
         
-        changeCreateModeBtn.title = createMode.toString();
-
+        changeCreateModeBtn.title = createModeString(createMode);
+        
         if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
             pickSelect();
         }
@@ -107,19 +107,86 @@ class ViewController: UIViewController
             return;
         }
         
-        switch createMode {
-        case .magiceye:
-            createMode = CreateMode.stereogram;
-            break;
-        case .stereogram:
-            createMode = CreateMode.magiceye;
-            break;
-        }
-        sender.title = createMode.toString();
+        //UIActionSheet
+        let actionSheet = UIAlertController(title:"パターン選択",
+            message: nil,
+            preferredStyle: UIAlertControllerStyle.ActionSheet)
         
-        if original != nil {
-            exec();
-        }
+        //Cancel 一つだけしか指定できない
+        let cancelAction:UIAlertAction = UIAlertAction(title: "やめる",
+            style: UIAlertActionStyle.Cancel,
+            handler:{
+                (action:UIAlertAction) -> Void in
+        })
+        actionSheet.addAction(cancelAction)
+
+        //立体視1
+        let s1Action:UIAlertAction = UIAlertAction(title: "ステレオグラム1",
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.createMode = Stereogram.ColorPattern.p1;
+                sender.title = self.createModeString(self.createMode);
+                if self.original != nil {
+                    self.exec();
+                }
+        })
+        actionSheet.addAction(s1Action)
+
+        //立体視2
+        let s2Action:UIAlertAction = UIAlertAction(title: "ステレオグラム2",
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.createMode = Stereogram.ColorPattern.p2;
+                sender.title = self.createModeString(self.createMode);
+                if self.original != nil {
+                    self.exec();
+                }
+        })
+        actionSheet.addAction(s2Action)
+
+        //立体視3
+        let s3Action:UIAlertAction = UIAlertAction(title: "ステレオグラム3",
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.createMode = Stereogram.ColorPattern.p3;
+                sender.title = self.createModeString(self.createMode);
+                if self.original != nil {
+                    self.exec();
+                }
+        })
+        actionSheet.addAction(s3Action)
+
+        //立体視4
+        let s4Action:UIAlertAction = UIAlertAction(title: "ステレオグラム4",
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.createMode = Stereogram.ColorPattern.p4;
+                sender.title = self.createModeString(self.createMode);
+                if self.original != nil {
+                    self.exec();
+                }
+        })
+        actionSheet.addAction(s4Action)
+
+        //マジカルアイ
+        let m1Action:UIAlertAction = UIAlertAction(title: "マジカルアイ",
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.createMode = Stereogram.ColorPattern.random1;
+                sender.title = self.createModeString(self.createMode);
+                if self.original != nil {
+                    self.exec();
+                }
+        })
+        actionSheet.addAction(m1Action)
+
+        presentViewController(actionSheet, animated: true, completion: nil)
+
     }
     
     @IBAction func otherAction(sender: AnyObject) {
@@ -492,8 +559,7 @@ class ViewController: UIViewController
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
             
-            let randomColor = (self.createMode == CreateMode.magiceye) ? true : false;
-            self.stereogram = Stereogram().generateStereogramImage(kuwahara, depthImage: filtered, colorRandom: randomColor);
+            self.stereogram = Stereogram().generateStereogramImage(kuwahara, depthImage: filtered, colorPattern: self.createMode);
             //self.stereogram = Stereogram().generateStereogramImage(origImage, depthImage: filtered, colorRandom: randomColor);
             dispatch_sync(dispatch_get_main_queue(), { () -> Void in
                 

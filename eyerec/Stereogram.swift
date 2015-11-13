@@ -6,16 +6,24 @@ private let d_u: UInt8 = 214;
 
 class Stereogram
 {
+    enum ColorPattern: Int {
+        case p1
+        case p2
+        case p3
+        case p4
+        case random1
+    }
+    
     struct OPT {
         var origImage: UIImage!
         var depthImage: UIImage!
-        var colorRandom: Bool = false
+        var colorPattern: ColorPattern = .p1
     };
     
-    func generateStereogramImage(origImage: UIImage, depthImage: UIImage, colorRandom: Bool = true)
+    func generateStereogramImage(origImage: UIImage, depthImage: UIImage, colorPattern: ColorPattern = .p1)
         -> UIImage?
     {
-        let data = generatePixelData(OPT(origImage: origImage, depthImage: depthImage, colorRandom: colorRandom));
+        let data = generatePixelData(OPT(origImage: origImage, depthImage: depthImage, colorPattern: colorPattern));
         //print("out data w,h,c,len:\(data.width),\(data.height),\(data.colorSize),\(data.data.count)");
         
         let cgImage = origImage.CGImage;
@@ -141,7 +149,9 @@ class Stereogram
         
         // ずらし幅はランダムカラーの時は分かりづらくなるので強めにする
         let rzure: Int;
-        if opts.colorRandom {
+        if  opts.colorPattern == ColorPattern.p1 ||
+            opts.colorPattern == ColorPattern.p2
+        {
             rzure = (width <= 100) ? 1 : width / 50;
         }
         else {
@@ -184,7 +194,7 @@ class Stereogram
                 
                 //print("sourcePos:\(sourcePos), pos:\(pos)");
                 
-                if opts.colorRandom {
+                if opts.colorPattern == ColorPattern.random1 {
                     let color = colors[Int(arc4random()) % colors.count];
                     out[pos * origColorSize + outCol.r] = color.r;
                     out[pos * origColorSize + outCol.g] = color.g;
@@ -200,7 +210,7 @@ class Stereogram
                 out[(pairpos + pos) * origColorSize + outCol.b] = out[pos * origColorSize + outCol.b];
                 
                 if origCol.a >= 0 {
-                    if opts.colorRandom {
+                    if opts.colorPattern == ColorPattern.random1 {
                         out[pos * origColorSize + outCol.a] = UInt8(128 + arc4random() % 128);
                         out[(pairpos + pos) * origColorSize + outCol.a] = out[pos * origColorSize + outCol.a];
                     }
@@ -228,9 +238,9 @@ class Stereogram
                 //print("source[sourcePos * colorSize + col.b]:\(source[sourcePos * colorSize + col.b])");
                 let depth = getDepthMap(
                     (r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]),
-                    zure: rzure);
+                    zure: rzure, colorPattern: opts.colorPattern);
                 if depth > 0 {
-                    if opts.colorRandom {
+                    if opts.colorPattern == ColorPattern.random1 {
                         let color = colors[Int(arc4random()) % colors.count];
                         out[(pos + depth) * origColorSize + outCol.r] = color.r;
                         out[(pos + depth) * origColorSize + outCol.g] = color.g;
@@ -257,7 +267,9 @@ class Stereogram
                     }
                 }
                 
-                if opts.colorRandom == false {
+                if  opts.colorPattern == ColorPattern.p1 ||
+                    opts.colorPattern == ColorPattern.p2
+                {
                     if x < depth {
                         out[pos * origColorSize + outCol.r] = 0;
                         out[pos * origColorSize + outCol.g] = 0;
@@ -279,7 +291,7 @@ class Stereogram
         var range = DepthRange();
         var ratio: Int = 1;
     }
-    var depth: [DepthStrength] = [
+    var depth_p1: [DepthStrength] = [
         DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
         DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: 128, u:   0)), ratio: 1),
         DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
@@ -294,8 +306,41 @@ class Stereogram
         DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: d_t, u:   0), b: (t: 128, u:   0)), ratio: 1),
         DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: 128, u:   0), b: (t: d_t, u:   0)), ratio: 1)
     ];
-    func getDepthMap(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int) -> Int {
+    var depth_p2: [DepthStrength] = [
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: d_t, u:   0), b: (t: d_t, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: d_t, u:   0), b: (t: 255, u: d_t)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_t), g: (t: d_t, u:   0), b: (t: d_t, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 255, u: d_t), b: (t: d_t, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 255, u: d_t), b: (t: 255, u: d_t)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_t), g: (t: d_t, u:   0), b: (t: 255, u: d_t)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_t), g: (t: 255, u: d_t), b: (t: d_t, u:   0)), ratio: 1)
+    ];
+    var depth_p3: [DepthStrength] = [
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: d_u, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_u, u:   0), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: d_u, u:   0), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: d_u, u:   0), b: (t: d_u, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_u, u:   0), g: (t: 255, u: d_u), b: (t: d_u, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_u, u:   0), g: (t: d_u, u:   0), b: (t: 255, u: d_u)), ratio: 1)
+    ];
+    var depth_p4: [DepthStrength] = [
+        DepthStrength(range: DepthRange(r: (t: d_u, u: d_t), g: (t: d_u, u: d_t), b: (t: d_u, u: d_t)), ratio: 1)
+    ];
+    func getDepthMap(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
         var ret = 0;
+        let depth: [DepthStrength];
+        switch colorPattern {
+        case .p1:
+            depth = depth_p1;
+        case .p2:
+            depth = depth_p2;
+        case .p3:
+            depth = depth_p3;
+        case .p4:
+            depth = depth_p4;
+        case .random1:
+            depth = depth_p1;
+        }
         for var i in 0 ..< depth.count {
             let d = depth[i];
             if  (color.r <= d.range.r.t && color.r >= d.range.r.u) &&
