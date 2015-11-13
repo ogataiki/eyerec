@@ -482,7 +482,8 @@ class ViewController: UIViewController
         //NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.0));
         //sleep(1);
         
-        let filtered = ImageProcessing.luminanceThresholdFilter(kuwahara, threshold: 0.5);
+        let filtered = kuwahara;
+        //let filtered = ImageProcessing.luminanceThresholdFilter(kuwahara, threshold: 0.5);
         //self.imageView.image = filtered;
         //NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.0));
         //sleep(1);

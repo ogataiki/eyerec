@@ -2,7 +2,7 @@ import UIKit
 import CoreGraphics
 
 private let d_t: UInt8 = 72;
-private let d_u: UInt8 = 184;
+private let d_u: UInt8 = 214;
 
 class Stereogram
 {
@@ -280,19 +280,19 @@ class Stereogram
         var ratio: Int = 1;
     }
     var depth: [DepthStrength] = [
-        //DepthStrength(range: DepthRange(r: (t: 255, u: 216), g: (t: 255, u: 216), b: (t: 255, u: 216)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: 255, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u:   0), b: (t: 255, u: d_u)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u:   0), b: (t: 255, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u: d_u), b: (t: 255, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u:   0), b: (t: 255, u: d_u)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: d_t, u:   0), b: (t: 255, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: d_t, u:   0), b: (t: d_t, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 255, u:   0), b: (t: d_t, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 255, u:   0), b: (t: 255, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: d_t, u:   0), b: (t: 255, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u:   0), b: (t: d_t, u:   0)), ratio: 1)
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: 128, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 128, u:   0), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 128, u:   0), b: (t: 128, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: 255, u: d_u), b: (t: 128, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: 128, u:   0), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: d_t, u:   0), b: (t: 128, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: d_t, u:   0), b: (t: d_t, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 128, u:   0), b: (t: d_t, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 128, u:   0), b: (t: 128, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: d_t, u:   0), b: (t: 128, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:   0), g: (t: 128, u:   0), b: (t: d_t, u:   0)), ratio: 1)
     ];
     func getDepthMap(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int) -> Int {
         var ret = 0;
