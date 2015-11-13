@@ -1,6 +1,9 @@
 import UIKit
 import CoreGraphics
 
+private let d_t: UInt8 = 72;
+private let d_u: UInt8 = 184;
+
 class Stereogram
 {
     struct OPT {
@@ -19,8 +22,10 @@ class Stereogram
         
         let origAlphaInfo = CGImageGetAlphaInfo(cgImage);
         let origBitmapInfo = CGImageGetBitmapInfo(cgImage);
+        let origColorSpace = CGImageGetColorSpace(cgImage);
         print("origAlphaInfo:\(origAlphaInfo.rawValue)");
         print("origBitmapInfo:\(origBitmapInfo.rawValue)");
+        print("origColorSpace:\(origColorSpace)");
 
         // こっちだとイメージ作り終わるまでインスタンスが保持できないっぽい
         //let provider = CGDataProviderCreateWithData(nil, data.data, data.data.count, nil);
@@ -151,7 +156,7 @@ class Stereogram
         let maxHeight = Int(height) + (margin*2);       // 作成される画像の高さ
         let outSize = maxWidth * maxHeight * origColorSize;
         
-        print("size:\(width),\(height), maxSize:\(maxWidth),\(maxHeight)");
+        print("size:\(width),\(height), maxSize:\(maxWidth),\(maxHeight), outSize:\(outSize)");
 
         
         var out: [UInt8] = Array(count: outSize, repeatedValue: 0);
@@ -221,39 +226,39 @@ class Stereogram
                 //print("source[sourcePos * colorSize + col.r]:\(source[sourcePos * colorSize + col.r])");
                 //print("source[sourcePos * colorSize + col.g]:\(source[sourcePos * colorSize + col.g])");
                 //print("source[sourcePos * colorSize + col.b]:\(source[sourcePos * colorSize + col.b])");
-                if  source[sourcePos * colorSize + col.r] <= 128 &&
-                    source[sourcePos * colorSize + col.g] <= 128 &&
-                    source[sourcePos * colorSize + col.b] <= 128
-                {
+                let depth = getDepthMap(
+                    (r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]),
+                    zure: rzure);
+                if depth > 0 {
                     if opts.colorRandom {
                         let color = colors[Int(arc4random()) % colors.count];
-                        out[(pos + rzure) * origColorSize + outCol.r] = color.r;
-                        out[(pos + rzure) * origColorSize + outCol.g] = color.g;
-                        out[(pos + rzure) * origColorSize + outCol.b] = color.b;
+                        out[(pos + depth) * origColorSize + outCol.r] = color.r;
+                        out[(pos + depth) * origColorSize + outCol.g] = color.g;
+                        out[(pos + depth) * origColorSize + outCol.b] = color.b;
                         
-                        out[(pairpos + pos - rzure) * origColorSize + outCol.r] = out[(pos + rzure) * origColorSize + outCol.r];
-                        out[(pairpos + pos - rzure) * origColorSize + outCol.g] = out[(pos + rzure) * origColorSize + outCol.g];
-                        out[(pairpos + pos - rzure) * origColorSize + outCol.b] = out[(pos + rzure) * origColorSize + outCol.b];
+                        out[(pairpos + pos - depth) * origColorSize + outCol.r] = out[(pos + depth) * origColorSize + outCol.r];
+                        out[(pairpos + pos - depth) * origColorSize + outCol.g] = out[(pos + depth) * origColorSize + outCol.g];
+                        out[(pairpos + pos - depth) * origColorSize + outCol.b] = out[(pos + depth) * origColorSize + outCol.b];
                     }
                     else {
-                        out[(pos + rzure) * origColorSize + outCol.r] = origSource[sourcePos * origColorSize + origCol.r];
-                        out[(pos + rzure) * origColorSize + outCol.g] = origSource[sourcePos * origColorSize + origCol.g];
-                        out[(pos + rzure) * origColorSize + outCol.b] = origSource[sourcePos * origColorSize + origCol.b];
+                        out[(pos + depth) * origColorSize + outCol.r] = origSource[sourcePos * origColorSize + origCol.r];
+                        out[(pos + depth) * origColorSize + outCol.g] = origSource[sourcePos * origColorSize + origCol.g];
+                        out[(pos + depth) * origColorSize + outCol.b] = origSource[sourcePos * origColorSize + origCol.b];
                         
-                        //out[(pairpos + pos - rzure) * origColorSize + outCol.r] = out[(pos + rzure) * origColorSize + outCol.r];
-                        //out[(pairpos + pos - rzure) * origColorSize + outCol.g] = out[(pos + rzure) * origColorSize + outCol.g];
-                        //out[(pairpos + pos - rzure) * origColorSize + outCol.b] = out[(pos + rzure) * origColorSize + outCol.b];
+                        //out[(pairpos + pos - depth) * origColorSize + outCol.r] = out[(pos + depth) * origColorSize + outCol.r];
+                        //out[(pairpos + pos - depth) * origColorSize + outCol.g] = out[(pos + depth) * origColorSize + outCol.g];
+                        //out[(pairpos + pos - depth) * origColorSize + outCol.b] = out[(pos + depth) * origColorSize + outCol.b];
                         
-                        if x >= rzure {
-                            out[pos * origColorSize + outCol.r] = origSource[(sourcePos - rzure) * origColorSize + origCol.r];
-                            out[pos * origColorSize + outCol.g] = origSource[(sourcePos - rzure) * origColorSize + origCol.g];
-                            out[pos * origColorSize + outCol.b] = origSource[(sourcePos - rzure) * origColorSize + origCol.b];
+                        if x >= depth {
+                            out[pos * origColorSize + outCol.r] = origSource[(sourcePos - depth) * origColorSize + origCol.r];
+                            out[pos * origColorSize + outCol.g] = origSource[(sourcePos - depth) * origColorSize + origCol.g];
+                            out[pos * origColorSize + outCol.b] = origSource[(sourcePos - depth) * origColorSize + origCol.b];
                         }
                     }
                 }
                 
                 if opts.colorRandom == false {
-                    if x < rzure {
+                    if x < depth {
                         out[pos * origColorSize + outCol.r] = 0;
                         out[pos * origColorSize + outCol.g] = 0;
                         out[pos * origColorSize + outCol.b] = 0;
@@ -263,5 +268,44 @@ class Stereogram
         }
         
         return (out, maxWidth, maxHeight, colorSize);
+    }
+    
+    struct DepthRange {
+        var r: (t: UInt8, u: UInt8) = (t: 255, u: 128);
+        var g: (t: UInt8, u: UInt8) = (t: 255, u: 128);
+        var b: (t: UInt8, u: UInt8) = (t: 255, u: 128);
+    }
+    struct DepthStrength {
+        var range = DepthRange();
+        var ratio: Int = 1;
+    }
+    var depth: [DepthStrength] = [
+        //DepthStrength(range: DepthRange(r: (t: 255, u: 216), g: (t: 255, u: 216), b: (t: 255, u: 216)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: 255, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u:   0), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u:   0), b: (t: 255, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u: d_u), b: (t: 255, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u:   0), b: (t: 255, u: d_u)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: d_t, u:   0), b: (t: 255, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: d_t, u:   0), b: (t: d_t, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 255, u:   0), b: (t: d_t, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: d_t, u:   0), g: (t: 255, u:   0), b: (t: 255, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: d_t, u:   0), b: (t: 255, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u:   0), g: (t: 255, u:   0), b: (t: d_t, u:   0)), ratio: 1)
+    ];
+    func getDepthMap(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int) -> Int {
+        var ret = 0;
+        for var i in 0 ..< depth.count {
+            let d = depth[i];
+            if  (color.r <= d.range.r.t && color.r >= d.range.r.u) &&
+                (color.g <= d.range.g.t && color.g >= d.range.g.u) &&
+                (color.b <= d.range.b.t && color.b >= d.range.b.u)
+            {
+                ret = zure * d.ratio;
+                break;
+            }
+        }
+        return ret;
     }
 }
