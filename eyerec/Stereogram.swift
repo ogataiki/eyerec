@@ -60,7 +60,8 @@ class Stereogram
             , false
             , renderingIntent);
         if let cg = outImage {
-            return UIImage(CGImage: cg);
+            return UIImage(CGImage: cg, scale: 1.0, orientation: origImage.imageOrientation);
+            //return UIImage(CGImage: cg);
         }
         return nil;
     }
@@ -341,7 +342,7 @@ class Stereogram
         case .random1:
             depth = depth_p1;
         }
-        for var i in 0 ..< depth.count {
+        for i in 0 ..< depth.count {
             let d = depth[i];
             if  (color.r <= d.range.r.t && color.r >= d.range.r.u) &&
                 (color.g <= d.range.g.t && color.g >= d.range.g.u) &&

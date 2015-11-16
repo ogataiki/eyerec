@@ -69,10 +69,56 @@ class ViewController: UIViewController
         myActivityIndicator.center = imageView.center
         
         changeCreateModeBtn.title = createModeString(createMode);
-        
-        if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
-            pickSelect();
+
+        let ud = NSUserDefaults.standardUserDefaults();
+        if let _ = ud.objectForKey("tutorial") {
+            if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
+                pickSelect();
+            }
         }
+        else {
+            if isTutorial == false {
+                tutorialExec();
+                isTutorial = true;
+            }
+        }
+    }
+    
+    struct TutorialStrings {
+        var t = "";
+        var m = "";
+    }
+    var tutorial: [TutorialStrings] = [
+        TutorialStrings(t: "はじめまして！", m: "立体君をインストールしてくれてありがとう！"),
+        TutorialStrings(t: "このアプリは", m: "写真や画像を立体視で遊べるように加工します！"),
+        TutorialStrings(t: "立体視とは", m: "視点を前後に移動することで、写真や画像の一部が立体的に飛び出して見えることを言います！"),
+        TutorialStrings(t: "これで遊ぶと", m: "視力回復の効果が期待できるかも？"),
+        TutorialStrings(t: "それはともかく", m: "楽しいのでぜひ遊んでみてください！"),
+        TutorialStrings(t: "遊び方は簡単", m: "画面下にあるカメラアイコンをタッチして写真や画像を選ぶだけ！"),
+        TutorialStrings(t: "飛び出して見えない画像は", m: "画面左下をタップして加工のパターンを変えてみよう！"),
+        TutorialStrings(t: "画像によっては。。。", m: "残念ながら、正しく加工できず乱れてしまうものもあります。。。ごめんね。"),
+        TutorialStrings(t: "それでは", m: "好きな写真を選んで遊んでみてください！"),
+    ];
+    var tutorialIndex: Int = 0;
+    var isTutorial = false;
+    func tutorialExec() {
+        if tutorialIndex >= tutorial.count {
+            let ud = NSUserDefaults.standardUserDefaults();
+            ud.setObject(NSNumber(bool: true), forKey: "tutorial");
+            return;
+        }
+        let alert = UIAlertController(title: tutorial[tutorialIndex].t,
+            message: tutorial[tutorialIndex].m,
+            preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
+            style: UIAlertActionStyle.Cancel,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.tutorialIndex++;
+                self.tutorialExec();
+        })
+        alert.addAction(cancelAction)
+        presentViewController(alert, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -509,42 +555,26 @@ class ViewController: UIViewController
     
     func exec() {
         
-        var origImage = self.original!;
-        
-        // 撮影時の向きを反映させるおまじない
-        UIGraphicsBeginImageContext(origImage.size);
-        origImage.drawInRect(CGRectMake(0, 0, origImage.size.width, origImage.size.height));
-        origImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        // おまじない終わり
+        let origImage = self.original!;
         
         self.imageView.image = origImage;
         
         self.myActivityIndicator.startAnimating();
         NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.0));
         
-        let image: UIImage;
-        if origImage.size.width < 320 || origImage.size.height < 480 {
-            let baseSize = CGSizeMake(640, 960);
-            let ratio: CGFloat;
-            if origImage.size.height > origImage.size.width {
-                ratio = baseSize.height / origImage.size.height;
-            }
-            else {
-                ratio = baseSize.width / origImage.size.width;
-            }
-            let newSize = CGSize(width: (origImage.size.width * ratio), height: (origImage.size.height * ratio))
-            
-            UIGraphicsBeginImageContext(newSize);
-            origImage.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height));
-            image = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-        }
-        else {
-            image = origImage;
-        }
+        // 撮影時の向き反映
+        var image: UIImage = origImage;
         
-        let kuwahara = ImageProcessing.kuwaharaFilter(image, radius: 2 + UInt(arc4random() % 4));
+        // 処理速度向上のためサイズを縮小 & 撮影時の向きを反映
+        let baseWidth: CGFloat = 320;
+        let ratio: CGFloat = baseWidth / image.size.width;
+        let newSize = CGSize(width: (image.size.width * ratio), height: (image.size.height * ratio))
+        UIGraphicsBeginImageContext(newSize);
+        image.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height));
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        let kuwahara = ImageProcessing.kuwaharaFilter(image, radius: 3);
         //self.imageView.image = kuwahara;
         //NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.0));
         //sleep(1);
@@ -560,25 +590,11 @@ class ViewController: UIViewController
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
             
             self.stereogram = Stereogram().generateStereogramImage(kuwahara, depthImage: filtered, colorPattern: self.createMode);
-            //self.stereogram = Stereogram().generateStereogramImage(origImage, depthImage: filtered, colorRandom: randomColor);
             dispatch_sync(dispatch_get_main_queue(), { () -> Void in
                 
                 self.myActivityIndicator.stopAnimating();
                 
                 if let s = self.stereogram {
-                    
-                    /*
-                    let size = image.size;
-                    let widthRatio = size.width / s.size.width
-                    let heightRatio = size.height / s.size.height
-                    let ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio
-                    let resizedSize = CGSize(width: (s.size.width * ratio), height: (s.size.height * ratio))
-                    UIGraphicsBeginImageContext(resizedSize)
-                    s.drawInRect(CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
-                    let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-                    UIGraphicsEndImageContext()
-                    self.imageView.image = resizedImage;
-                    */
                     
                     self.imageView.image = s;
                     self.imageView.setNeedsDisplay();
@@ -676,6 +692,82 @@ class ViewController: UIViewController
                 self.movieStart(self.videoURL);
             }
         }
+    }
+    
+    func fixOrientation(image: UIImage) -> UIImage
+    {
+        
+        if image.imageOrientation == UIImageOrientation.Up {
+            return image
+        }
+        
+        var transform = CGAffineTransformIdentity
+        
+        switch image.imageOrientation {
+        case .Down, .DownMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.width, image.size.height)
+            transform = CGAffineTransformRotate(transform, CGFloat(M_PI));
+            
+        case .Left, .LeftMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.width, 0);
+            transform = CGAffineTransformRotate(transform, CGFloat(M_PI_2));
+            
+        case .Right, .RightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, image.size.height);
+            transform = CGAffineTransformRotate(transform, CGFloat(-M_PI_2));
+            
+        case .Up, .UpMirrored:
+            break
+        }
+        
+        
+        switch image.imageOrientation {
+            
+        case .UpMirrored, .DownMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.width, 0)
+            transform = CGAffineTransformScale(transform, -1, 1)
+            
+        case .LeftMirrored, .RightMirrored:
+            transform = CGAffineTransformTranslate(transform, image.size.height, 0)
+            transform = CGAffineTransformScale(transform, -1, 1);
+            
+        default:
+            break;
+        }
+        
+        
+        
+        // Now we draw the underlying CGImage into a new context, applying the transform
+        // calculated above.
+        let ctx = CGBitmapContextCreate(
+            nil,
+            Int(image.size.width),
+            Int(image.size.height),
+            CGImageGetBitsPerComponent(image.CGImage),
+            0,
+            CGImageGetColorSpace(image.CGImage),
+            UInt32(CGImageGetBitmapInfo(image.CGImage).rawValue)
+        )
+        
+        CGContextConcatCTM(ctx, transform);
+        
+        switch image.imageOrientation {
+            
+        case .Left, .LeftMirrored, .Right, .RightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0, 0, image.size.height,image.size.width), image.CGImage);
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0, 0, image.size.width,image.size.height), image.CGImage);
+            break;
+        }
+        
+        let cgimg = CGBitmapContextCreateImage(ctx)
+        
+        let img = UIImage(CGImage: cgimg!)
+        
+        return img;
+        
     }
 
     override func shouldAutorotate() -> Bool {
