@@ -91,12 +91,11 @@ class ViewController: UIViewController
     var tutorial: [TutorialStrings] = [
         TutorialStrings(t: "はじめまして！", m: "立体君をインストールしてくれてありがとう！"),
         TutorialStrings(t: "このアプリは", m: "写真や画像を立体視で遊べるように加工します！"),
-        TutorialStrings(t: "立体視とは", m: "視点を前後に移動することで、写真や画像の一部が立体的に飛び出して見えることを言います！"),
-        TutorialStrings(t: "これで遊ぶと", m: "視力回復の効果が期待できるかも？"),
+        TutorialStrings(t: "立体視とは", m: "2枚の写真や画像が重なるように視点を前後に移動することで、一部が立体的に飛び出して見えることを言います！"),
+        TutorialStrings(t: "これで遊ぶと", m: "視力回復の効果が期待できるかも！？"),
         TutorialStrings(t: "それはともかく", m: "楽しいのでぜひ遊んでみてください！"),
         TutorialStrings(t: "遊び方は簡単", m: "画面下にあるカメラアイコンをタッチして写真や画像を選ぶだけ！"),
         TutorialStrings(t: "飛び出して見えない画像は", m: "画面左下をタップして加工のパターンを変えてみよう！"),
-        TutorialStrings(t: "画像によっては。。。", m: "残念ながら、正しく加工できず乱れてしまうものもあります。。。ごめんね。"),
         TutorialStrings(t: "それでは", m: "好きな写真を選んで遊んでみてください！"),
     ];
     var tutorialIndex: Int = 0;
