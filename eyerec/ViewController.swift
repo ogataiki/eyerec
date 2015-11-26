@@ -3,6 +3,7 @@ import AVFoundation
 import AssetsLibrary
 import GPUImage
 import MobileCoreServices
+import iAd
 
 class ViewController: UIViewController
 , UIImagePickerControllerDelegate
@@ -60,6 +61,12 @@ class ViewController: UIViewController
         
         // インジケータをViewに追加する.
         self.view.addSubview(myActivityIndicator)
+        
+        // iAdを使用する
+        self.canDisplayBannerAds = true;
+        
+        // iAd(インタースティシャル)の自動表示
+        self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.Automatic;
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -502,6 +509,7 @@ class ViewController: UIViewController
             let controller = UIImagePickerController()
             controller.delegate = self
             controller.sourceType = UIImagePickerControllerSourceType.Camera
+            controller.modalPresentationStyle = UIModalPresentationStyle.CurrentContext;
             self.presentViewController(controller, animated: true, completion: nil)
         }
     }
@@ -512,6 +520,7 @@ class ViewController: UIViewController
             let controller = UIImagePickerController()
             controller.delegate = self
             controller.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+            controller.modalPresentationStyle = UIModalPresentationStyle.CurrentContext;
             controller.allowsEditing = false;
             self.presentViewController(controller, animated: true, completion: nil)
         }

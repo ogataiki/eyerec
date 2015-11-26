@@ -21,6 +21,7 @@
 		508221291BD47EF4002D3E57 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 508221271BD47EF4002D3E57 /* AVFoundation.framework */; };
 		50A4EB951BD71A2D00191B26 /* LowPassMoveFilter.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 50A4EB941BD71A2D00191B26 /* LowPassMoveFilter.fsh */; };
 		50A4EB9C1BD72E9800191B26 /* LowPassMoveFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A4EB9B1BD72E9800191B26 /* LowPassMoveFilter.swift */; };
+		50C77A251C06900500DB5642 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50C77A241C06900500DB5642 /* iAd.framework */; };
 		50D4274B1BE04DC1003FF7DE /* Stereogram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D4274A1BE04DC1003FF7DE /* Stereogram.swift */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,7 @@
 		50A4EB941BD71A2D00191B26 /* LowPassMoveFilter.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = LowPassMoveFilter.fsh; sourceTree = "<group>"; };
 		50A4EB961BD72B2900191B26 /* ObjCBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCBridge.h; sourceTree = "<group>"; };
 		50A4EB9B1BD72E9800191B26 /* LowPassMoveFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LowPassMoveFilter.swift; sourceTree = "<group>"; };
+		50C77A241C06900500DB5642 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		50D4274A1BE04DC1003FF7DE /* Stereogram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stereogram.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50C77A251C06900500DB5642 /* iAd.framework in Frameworks */,
 				507059A31BE1FE9A00322CFC /* QuartzCore.framework in Frameworks */,
 				507059A11BE1FD1200322CFC /* CoreGraphics.framework in Frameworks */,
 				508221281BD47EF4002D3E57 /* AssetsLibrary.framework in Frameworks */,
@@ -144,6 +147,7 @@
 		508221221BD471FE002D3E57 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50C77A241C06900500DB5642 /* iAd.framework */,
 				507059A21BE1FE9A00322CFC /* QuartzCore.framework */,
 				507059A01BE1FD1200322CFC /* CoreGraphics.framework */,
 				508221261BD47EF4002D3E57 /* AssetsLibrary.framework */,
