@@ -7,11 +7,25 @@ private let d_u: UInt8 = 214;
 class Stereogram
 {
     enum ColorPattern: Int {
-        case p1
-        case p2
-        case p3
-        case p4
+        case p1 = 0, p2, p3, p4, pred, pgreen, pblue
         case random1
+        
+        static func count() -> Int {
+            return 8;
+        }
+        
+        static func getFromRawValue(val: Int) -> ColorPattern {
+            switch val {
+            case 0: return p1;
+            case 1: return p2;
+            case 2: return p3;
+            case 3: return p4;
+            case 4: return pred;
+            case 5: return pgreen;
+            case 6: return pblue;
+            default: return random1;
+            }
+        }
     }
     
     struct OPT {
@@ -327,6 +341,21 @@ class Stereogram
     var depth_p4: [DepthStrength] = [
         DepthStrength(range: DepthRange(r: (t: d_u, u: d_t), g: (t: d_u, u: d_t), b: (t: d_u, u: d_t)), ratio: 1)
     ];
+    var depth_p_red: [DepthStrength] = [
+        DepthStrength(range: DepthRange(r: (t: 255, u:  64), g: (t:  64, u:   0), b: (t:  64, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: 128), g: (t: 128, u:  64), b: (t: 128, u:  64)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 255, u: 192), g: (t: 192, u: 128), b: (t: 192, u: 128)), ratio: 1)
+    ];
+    var depth_p_green: [DepthStrength] = [
+        DepthStrength(range: DepthRange(r: (t:  64, u:   0), g: (t: 255, u:  64), b: (t:  64, u:   0)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:  64), g: (t: 255, u: 128), b: (t: 128, u:  64)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 192, u: 128), g: (t: 255, u: 192), b: (t: 192, u: 128)), ratio: 1)
+    ];
+    var depth_p_blue: [DepthStrength] = [
+        DepthStrength(range: DepthRange(r: (t:  64, u:   0), g: (t:  64, u:   0), b: (t: 255, u:  64)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 128, u:  64), g: (t: 128, u:  64), b: (t: 255, u: 128)), ratio: 1),
+        DepthStrength(range: DepthRange(r: (t: 192, u: 128), g: (t: 192, u: 128), b: (t: 255, u: 192)), ratio: 1)
+    ];
     func getDepthMap(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
         var ret = 0;
         let depth: [DepthStrength];
@@ -339,6 +368,12 @@ class Stereogram
             depth = depth_p3;
         case .p4:
             depth = depth_p4;
+        case .pred:
+            depth = depth_p_red;
+        case .pgreen:
+            depth = depth_p_green;
+        case .pblue:
+            depth = depth_p_blue;
         case .random1:
             depth = depth_p1;
         }

@@ -19,17 +19,24 @@ class ViewController: UIViewController
     func createModeString(p: Stereogram.ColorPattern) -> String {
         switch p{
         case .random1:
-            return "MagicEye"
+            return "マジックアイ"
         case .p1:
-            return "Stereogram1"
+            return "パターン1"
         case .p2:
-            return "Stereogram2"
+            return "パターン2"
         case .p3:
-            return "Stereogram3"
+            return "パターン3"
         case .p4:
-            return "Stereogram4"
+            return "パターン4"
+        case .pred:
+            return "パターン赤"
+        case .pgreen:
+            return "パターン緑"
+        case .pblue:
+            return "パターン青"
         }
     }
+    
     
     var original: UIImage? = nil;
     var stereogram: UIImage? = nil;
@@ -50,6 +57,8 @@ class ViewController: UIViewController
         // Do any additional setup after loading the view, typically from a nib.
         
         imageView.image = nil;
+        
+        original = UIImage(named: "DefaultImage");
         
         // インジケータを作成する.
         myActivityIndicator = UIActivityIndicatorView()
@@ -77,10 +86,11 @@ class ViewController: UIViewController
         
         changeCreateModeBtn.title = createModeString(createMode);
 
+
         let ud = NSUserDefaults.standardUserDefaults();
         if let _ = ud.objectForKey("tutorial") {
             if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
-                pickSelect();
+                exec();
             }
         }
         else {
@@ -111,6 +121,11 @@ class ViewController: UIViewController
         if tutorialIndex >= tutorial.count {
             let ud = NSUserDefaults.standardUserDefaults();
             ud.setObject(NSNumber(bool: true), forKey: "tutorial");
+            
+            if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
+                exec();
+            }
+
             return;
         }
         let alert = UIAlertController(title: tutorial[tutorialIndex].t,
@@ -172,70 +187,20 @@ class ViewController: UIViewController
         })
         actionSheet.addAction(cancelAction)
 
-        //立体視1
-        let s1Action:UIAlertAction = UIAlertAction(title: "ステレオグラム1",
-            style: UIAlertActionStyle.Default,
-            handler:{
-                (action:UIAlertAction) -> Void in
-                self.createMode = Stereogram.ColorPattern.p1;
-                sender.title = self.createModeString(self.createMode);
-                if self.original != nil {
-                    self.exec();
-                }
-        })
-        actionSheet.addAction(s1Action)
-
-        //立体視2
-        let s2Action:UIAlertAction = UIAlertAction(title: "ステレオグラム2",
-            style: UIAlertActionStyle.Default,
-            handler:{
-                (action:UIAlertAction) -> Void in
-                self.createMode = Stereogram.ColorPattern.p2;
-                sender.title = self.createModeString(self.createMode);
-                if self.original != nil {
-                    self.exec();
-                }
-        })
-        actionSheet.addAction(s2Action)
-
-        //立体視3
-        let s3Action:UIAlertAction = UIAlertAction(title: "ステレオグラム3",
-            style: UIAlertActionStyle.Default,
-            handler:{
-                (action:UIAlertAction) -> Void in
-                self.createMode = Stereogram.ColorPattern.p3;
-                sender.title = self.createModeString(self.createMode);
-                if self.original != nil {
-                    self.exec();
-                }
-        })
-        actionSheet.addAction(s3Action)
-
-        //立体視4
-        let s4Action:UIAlertAction = UIAlertAction(title: "ステレオグラム4",
-            style: UIAlertActionStyle.Default,
-            handler:{
-                (action:UIAlertAction) -> Void in
-                self.createMode = Stereogram.ColorPattern.p4;
-                sender.title = self.createModeString(self.createMode);
-                if self.original != nil {
-                    self.exec();
-                }
-        })
-        actionSheet.addAction(s4Action)
-
-        //マジカルアイ
-        let m1Action:UIAlertAction = UIAlertAction(title: "マジカルアイ",
-            style: UIAlertActionStyle.Default,
-            handler:{
-                (action:UIAlertAction) -> Void in
-                self.createMode = Stereogram.ColorPattern.random1;
-                sender.title = self.createModeString(self.createMode);
-                if self.original != nil {
-                    self.exec();
-                }
-        })
-        actionSheet.addAction(m1Action)
+        for i in 0 ..< Stereogram.ColorPattern.count() {
+            let p = Stereogram.ColorPattern.getFromRawValue(i);
+            let alert:UIAlertAction = UIAlertAction(title: createModeString(p),
+                style: UIAlertActionStyle.Default,
+                handler:{
+                    (action:UIAlertAction) -> Void in
+                    self.createMode = p;
+                    sender.title = self.createModeString(self.createMode);
+                    if self.original != nil {
+                        self.exec();
+                    }
+            })
+            actionSheet.addAction(alert)
+        }
 
         presentViewController(actionSheet, animated: true, completion: nil)
 
@@ -606,6 +571,16 @@ class ViewController: UIViewController
                     
                     self.imageView.image = s;
                     self.imageView.setNeedsDisplay();
+                    let alert = UIAlertController(title:"左右の画像が重なるように視点を移動しよう！",
+                        message: "画像の奥または手前を見るようにしてみよう。",
+                        preferredStyle: UIAlertControllerStyle.Alert)
+                    let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
+                        style: UIAlertActionStyle.Cancel,
+                        handler:{
+                            (action:UIAlertAction) -> Void in
+                    })
+                    alert.addAction(cancelAction)
+                    self.presentViewController(alert, animated: true, completion: nil)
                 }
                 else {
                     let alert = UIAlertController(title:"画像作成に失敗しました。",
