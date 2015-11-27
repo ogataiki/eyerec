@@ -70,12 +70,6 @@ class ViewController: UIViewController
         
         // インジケータをViewに追加する.
         self.view.addSubview(myActivityIndicator)
-        
-        // iAdを使用する
-        self.canDisplayBannerAds = true;
-        
-        // iAd(インタースティシャル)の自動表示
-        self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.Automatic;
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -92,6 +86,12 @@ class ViewController: UIViewController
             if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
                 exec();
             }
+            
+            // iAdを使用する
+            self.canDisplayBannerAds = true;
+            
+            // iAd(インタースティシャル)の自動表示
+            self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.Automatic;
         }
         else {
             if isTutorial == false {
@@ -187,7 +187,8 @@ class ViewController: UIViewController
         })
         actionSheet.addAction(cancelAction)
 
-        for i in 0 ..< Stereogram.ColorPattern.count() {
+        // マジックアイは使わない
+        for i in 0 ..< Stereogram.ColorPattern.count() - 1 {
             let p = Stereogram.ColorPattern.getFromRawValue(i);
             let alert:UIAlertAction = UIAlertAction(title: createModeString(p),
                 style: UIAlertActionStyle.Default,
