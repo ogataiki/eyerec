@@ -19,21 +19,21 @@ class ViewController: UIViewController
     func createModeString(p: Stereogram.ColorPattern) -> String {
         switch p{
         case .random1:
-            return "マジックアイ"
+            return NSLocalizedString("modemagiceye", comment: "モードマジックアイ")
         case .p1:
-            return "パターン1"
+            return NSLocalizedString("modepattern1", comment: "モードパターン1")
         case .p2:
-            return "パターン2"
+            return NSLocalizedString("modepattern2", comment: "モードパターン2")
         case .p3:
-            return "パターン3"
+            return NSLocalizedString("modepattern3", comment: "モードパターン3")
         case .p4:
-            return "パターン4"
+            return NSLocalizedString("modepattern4", comment: "モードパターン4")
         case .pred:
-            return "パターン赤"
+            return NSLocalizedString("modepatternred", comment: "モードパターン赤")
         case .pgreen:
-            return "パターン緑"
+            return NSLocalizedString("modepatterngreen", comment: "モードパターン緑")
         case .pblue:
-            return "パターン青"
+            return NSLocalizedString("modepatternblue", comment: "モードパターン青")
         }
     }
     
@@ -106,15 +106,15 @@ class ViewController: UIViewController
         var m = "";
     }
     var tutorial: [TutorialStrings] = [
-        TutorialStrings(t: "はじめまして！", m: "立体君をインストールしてくれてありがとう！"),
-        TutorialStrings(t: "このアプリは", m: "写真や画像を立体視で遊べるように加工します！"),
-        TutorialStrings(t: "立体視とは", m: "2枚の写真や画像が重なるように視点を前後に移動することで、一部が立体的に飛び出して見えることを言います！"),
-        TutorialStrings(t: "これで遊ぶと", m: "視力回復の効果が期待できるかも！？"),
-        TutorialStrings(t: "それはともかく", m: "楽しいのでぜひ遊んでみてください！"),
-        TutorialStrings(t: "遊び方は簡単", m: "画面下にあるカメラアイコンをタッチして写真や画像を選ぶだけ！"),
-        TutorialStrings(t: "飛び出して見えない画像は", m: "画面左下をタップして加工のパターンを変えてみよう！"),
-        TutorialStrings(t: "それでは", m: "好きな写真を選んで遊んでみてください！"),
-    ];
+        TutorialStrings(t: NSLocalizedString("TT1", comment: "TT1"), m: NSLocalizedString("TM1", comment: "TM1")),
+        TutorialStrings(t: NSLocalizedString("TT2", comment: "TT2"), m: NSLocalizedString("TM2", comment: "TM2")),
+        TutorialStrings(t: NSLocalizedString("TT3", comment: "TT3"), m: NSLocalizedString("TM3", comment: "TM3")),
+        TutorialStrings(t: NSLocalizedString("TT4", comment: "TT4"), m: NSLocalizedString("TM4", comment: "TM4")),
+        TutorialStrings(t: NSLocalizedString("TT5", comment: "TT5"), m: NSLocalizedString("TM5", comment: "TM5")),
+        TutorialStrings(t: NSLocalizedString("TT6", comment: "TT6"), m: NSLocalizedString("TM6", comment: "TM6")),
+        TutorialStrings(t: NSLocalizedString("TT7", comment: "TT7"), m: NSLocalizedString("TM7", comment: "TM7")),
+        TutorialStrings(t: NSLocalizedString("TT8", comment: "TT8"), m: NSLocalizedString("TM8", comment: "TM8")),
+    ]
     var tutorialIndex: Int = 0;
     var isTutorial = false;
     func tutorialExec() {
@@ -148,7 +148,7 @@ class ViewController: UIViewController
     }
     
     func procAlart() {
-        let alert = UIAlertController(title:"画像処理中です。",
+        let alert = UIAlertController(title:NSLocalizedString("Processing", comment: "画像処理中です。"),
             message: nil,
             preferredStyle: UIAlertControllerStyle.Alert)
         let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
@@ -175,12 +175,12 @@ class ViewController: UIViewController
         }
         
         //UIActionSheet
-        let actionSheet = UIAlertController(title:"パターン選択",
+        let actionSheet = UIAlertController(title:NSLocalizedString("Select pattern", comment: "パターン選択"),
             message: nil,
             preferredStyle: UIAlertControllerStyle.ActionSheet)
         
         //Cancel 一つだけしか指定できない
-        let cancelAction:UIAlertAction = UIAlertAction(title: "やめる",
+        let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
             style: UIAlertActionStyle.Cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
@@ -215,12 +215,12 @@ class ViewController: UIViewController
         }
         
         //UIActionSheet
-        let actionSheet = UIAlertController(title:"オプション操作",
+        let actionSheet = UIAlertController(title:NSLocalizedString("Option", comment: "オプション"),
             message: nil,
             preferredStyle: UIAlertControllerStyle.ActionSheet)
         
         //Cancel 一つだけしか指定できない
-        let cancelAction:UIAlertAction = UIAlertAction(title: "やめる",
+        let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
             style: UIAlertActionStyle.Cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
@@ -228,7 +228,7 @@ class ViewController: UIViewController
         actionSheet.addAction(cancelAction)
 
         if let i = self.imageView.image {
-            let saveAction:UIAlertAction = UIAlertAction(title: "表示中画像を保存",
+            let saveAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Save image", comment: "表示中画像を保存"),
                 style: UIAlertActionStyle.Default,
                 handler:{
                     (action:UIAlertAction) -> Void in
@@ -308,7 +308,7 @@ class ViewController: UIViewController
         , contextInfo: UnsafeMutablePointer<Void>)
     {
         if error != nil {
-            let alert = UIAlertController(title:"保存失敗",
+            let alert = UIAlertController(title:NSLocalizedString("Save image error", comment: "保存失敗"),
                 message: nil,
                 preferredStyle: UIAlertControllerStyle.Alert)
             let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
@@ -320,7 +320,7 @@ class ViewController: UIViewController
             presentViewController(alert, animated: true, completion: nil)
         }
         else {
-            let alert = UIAlertController(title:"保存しました",
+            let alert = UIAlertController(title:NSLocalizedString("Save image success", comment: "保存しました"),
                 message: nil,
                 preferredStyle: UIAlertControllerStyle.Alert)
             let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
@@ -336,19 +336,19 @@ class ViewController: UIViewController
     func pickSelect() {
         
         //UIActionSheet
-        let actionSheet = UIAlertController(title:"画像を選択",
+        let actionSheet = UIAlertController(title:NSLocalizedString("Select image", comment: "画像を選択"),
             message: nil,
             preferredStyle: UIAlertControllerStyle.ActionSheet)
         
         //Cancel 一つだけしか指定できない
-        let cancelAction:UIAlertAction = UIAlertAction(title: "やめる",
+        let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
             style: UIAlertActionStyle.Cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
         })
         
         //Default 複数指定可
-        let cameraAction = UIAlertAction(title: "写真撮影",
+        let cameraAction = UIAlertAction(title: NSLocalizedString("Take a photo", comment: "写真を撮影"),
             style: UIAlertActionStyle.Default,
             handler:{
                 (action:UIAlertAction) -> Void in
@@ -356,7 +356,7 @@ class ViewController: UIViewController
                 self.pickImageFromCamera()
         })
         
-        let libraryAction = UIAlertAction(title: "写真ライブラリ",
+        let libraryAction = UIAlertAction(title: NSLocalizedString("Photo album", comment: "カメラロールから選ぶ"),
             style: UIAlertActionStyle.Default,
             handler:{
                 (action:UIAlertAction) -> Void in
@@ -572,8 +572,8 @@ class ViewController: UIViewController
                     
                     self.imageView.image = s;
                     self.imageView.setNeedsDisplay();
-                    let alert = UIAlertController(title:"左右の画像が重なるように視点を移動しよう！",
-                        message: "画像の奥または手前を見るようにしてみよう。",
+                    let alert = UIAlertController(title:NSLocalizedString("How to title", comment: "左右の画像が重なるように視点を移動しよう！"),
+                        message: NSLocalizedString("How to message", comment: "画像の奥を見るよう意識してみよう。"),
                         preferredStyle: UIAlertControllerStyle.Alert)
                     let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
                         style: UIAlertActionStyle.Cancel,
@@ -584,7 +584,7 @@ class ViewController: UIViewController
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
                 else {
-                    let alert = UIAlertController(title:"画像作成に失敗しました。",
+                    let alert = UIAlertController(title:NSLocalizedString("Process error", comment: "画像作成に失敗しました。"),
                         message: nil,
                         preferredStyle: UIAlertControllerStyle.Alert)
                     let cancelAction:UIAlertAction = UIAlertAction(title: "OK",

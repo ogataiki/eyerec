@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B5D6CB61C0D35BB00E91A61 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6CB81C0D35BB00E91A61 /* Localizable.strings */; };
+		0B5D6CC21C0EE34500E91A61 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6CBF1C0EE0DA00E91A61 /* Info.plist */; };
+		0B5D6CC51C0EE66600E91A61 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6CC71C0EE66600E91A61 /* InfoPlist.strings */; };
 		500EF0EE1BD0C9330042B11C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500EF0ED1BD0C9330042B11C /* AppDelegate.swift */; };
 		500EF0F01BD0C9330042B11C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500EF0EF1BD0C9330042B11C /* ViewController.swift */; };
 		500EF0F31BD0C9330042B11C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 500EF0F11BD0C9330042B11C /* Main.storyboard */; };
@@ -36,8 +39,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0B5D6CB21C0D33BC00E91A61 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		0B5D6CB31C0D33BC00E91A61 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		0B5D6CB71C0D35BB00E91A61 /* Base */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0B5D6CB91C0D362000E91A61 /* ja */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0B5D6CBA1C0E7E8A00E91A61 /* ja-JP */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ja-JP"; path = "ja-JP.lproj/Main.strings"; sourceTree = "<group>"; };
+		0B5D6CBB1C0E7E8A00E91A61 /* ja-JP */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ja-JP"; path = "ja-JP.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		0B5D6CBC1C0E7E8B00E91A61 /* ja-JP */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "ja-JP"; path = "ja-JP.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		0B5D6CBE1C0EE0DA00E91A61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
+		0B5D6CC61C0EE66600E91A61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0B5D6CC81C0EE66A00E91A61 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0B5D6CC91C0EE66C00E91A61 /* ja-JP */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ja-JP"; path = "ja-JP.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		500EF0E81BD0C9330042B11C /* eyerec.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = eyerec.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		500EF0EC1BD0C9330042B11C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		500EF0ED1BD0C9330042B11C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		500EF0EF1BD0C9330042B11C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		500EF0F21BD0C9330042B11C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -122,7 +135,9 @@
 		500EF0EB1BD0C9330042B11C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				500EF0EC1BD0C9330042B11C /* Info.plist */,
+				0B5D6CB81C0D35BB00E91A61 /* Localizable.strings */,
+				0B5D6CBF1C0EE0DA00E91A61 /* Info.plist */,
+				0B5D6CC71C0EE66600E91A61 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -232,6 +247,8 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
+				"ja-JP",
 			);
 			mainGroup = 500EF0DF1BD0C9330042B11C;
 			productRefGroup = 500EF0E91BD0C9330042B11C /* Products */;
@@ -250,9 +267,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				500EF0F31BD0C9330042B11C /* Main.storyboard in Resources */,
+				0B5D6CC51C0EE66600E91A61 /* InfoPlist.strings in Resources */,
 				500EF0F81BD0C9330042B11C /* LaunchScreen.xib in Resources */,
+				0B5D6CC21C0EE34500E91A61 /* Info.plist in Resources */,
 				50A4EB951BD71A2D00191B26 /* LowPassMoveFilter.fsh in Resources */,
 				500EF0F51BD0C9330042B11C /* Images.xcassets in Resources */,
+				0B5D6CB61C0D35BB00E91A61 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,10 +334,40 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0B5D6CB81C0D35BB00E91A61 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0B5D6CB71C0D35BB00E91A61 /* Base */,
+				0B5D6CB91C0D362000E91A61 /* ja */,
+				0B5D6CBC1C0E7E8B00E91A61 /* ja-JP */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		0B5D6CBF1C0EE0DA00E91A61 /* Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0B5D6CBE1C0EE0DA00E91A61 /* Base */,
+			);
+			name = Info.plist;
+			sourceTree = "<group>";
+		};
+		0B5D6CC71C0EE66600E91A61 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0B5D6CC61C0EE66600E91A61 /* Base */,
+				0B5D6CC81C0EE66A00E91A61 /* ja */,
+				0B5D6CC91C0EE66C00E91A61 /* ja-JP */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		500EF0F11BD0C9330042B11C /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				500EF0F21BD0C9330042B11C /* Base */,
+				0B5D6CB21C0D33BC00E91A61 /* ja */,
+				0B5D6CBA1C0E7E8A00E91A61 /* ja-JP */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -326,6 +376,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				500EF0F71BD0C9330042B11C /* Base */,
+				0B5D6CB31C0D33BC00E91A61 /* ja */,
+				0B5D6CBB1C0E7E8A00E91A61 /* ja-JP */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";
@@ -426,7 +478,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = eyerec/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/eyerecTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ogataiki.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -444,7 +496,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = eyerec/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/eyerecTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ogataiki.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
