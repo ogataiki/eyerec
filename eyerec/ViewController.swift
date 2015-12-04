@@ -753,12 +753,11 @@ class ViewController: UIViewController
         return img;
         
     }
-
+    
     override func shouldAutorotate() -> Bool {
         return true;
     }
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         return UIInterfaceOrientationMask.Landscape
     }
-    
 }
