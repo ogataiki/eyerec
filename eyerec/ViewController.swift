@@ -52,7 +52,8 @@ class ViewController: UIViewController
         
         imageView.image = nil;
         
-        original = UIImage(named: "DefaultImage");
+        
+        original = UIImage(named: "DefaultImage\(1+arc4random()%3)");
         
         // インジケータを作成する.
         myActivityIndicator = UIActivityIndicatorView()
