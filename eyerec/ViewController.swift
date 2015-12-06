@@ -28,12 +28,6 @@ class ViewController: UIViewController
             return NSLocalizedString("modepattern3", comment: "モードパターン3")
         case .p4:
             return NSLocalizedString("modepattern4", comment: "モードパターン4")
-        case .pred:
-            return NSLocalizedString("modepatternred", comment: "モードパターン赤")
-        case .pgreen:
-            return NSLocalizedString("modepatterngreen", comment: "モードパターン緑")
-        case .pblue:
-            return NSLocalizedString("modepatternblue", comment: "モードパターン青")
         }
     }
     
@@ -188,7 +182,7 @@ class ViewController: UIViewController
         actionSheet.addAction(cancelAction)
 
         // マジックアイは使わない
-        for i in 0 ..< Stereogram.ColorPattern.count() - 1 {
+        for i in 0 ..< Stereogram.ColorPattern.count() {
             let p = Stereogram.ColorPattern.getFromRawValue(i);
             let alert:UIAlertAction = UIAlertAction(title: createModeString(p),
                 style: UIAlertActionStyle.Default,
@@ -540,7 +534,7 @@ class ViewController: UIViewController
         var image: UIImage = origImage;
         
         // 処理速度向上のためサイズを縮小 & 撮影時の向きを反映
-        let baseWidth: CGFloat = 320;
+        let baseWidth: CGFloat = 640;
         let ratio: CGFloat = baseWidth / image.size.width;
         let newSize = CGSize(width: (image.size.width * ratio), height: (image.size.height * ratio))
         UIGraphicsBeginImageContext(newSize);
@@ -553,7 +547,7 @@ class ViewController: UIViewController
         //NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.0));
         //sleep(1);
         
-        let filtered = kuwahara;
+        //let filtered = kuwahara;
         //let filtered = ImageProcessing.luminanceThresholdFilter(kuwahara, threshold: 0.5);
         //self.imageView.image = filtered;
         //NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.0));
@@ -563,7 +557,7 @@ class ViewController: UIViewController
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
             
-            self.stereogram = Stereogram().generateStereogramImage(kuwahara, depthImage: filtered, colorPattern: self.createMode);
+            self.stereogram = Stereogram().generateStereogramImage(kuwahara, depthImage: kuwahara, colorPattern: self.createMode);
             dispatch_sync(dispatch_get_main_queue(), { () -> Void in
                 
                 self.myActivityIndicator.stopAnimating();

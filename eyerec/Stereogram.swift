@@ -7,11 +7,11 @@ private let d_u: UInt8 = 214;
 class Stereogram
 {
     enum ColorPattern: Int {
-        case p1 = 0, p2, p3, p4, pred, pgreen, pblue
+        case p1 = 0, p2, p3, p4
         case random1
         
         static func count() -> Int {
-            return 8;
+            return 5;
         }
         
         static func getFromRawValue(val: Int) -> ColorPattern {
@@ -20,9 +20,6 @@ class Stereogram
             case 1: return p2;
             case 2: return p3;
             case 3: return p4;
-            case 4: return pred;
-            case 5: return pgreen;
-            case 6: return pblue;
             default: return random1;
             }
         }
@@ -163,15 +160,7 @@ class Stereogram
         //let inSize = width * height * colorSize;
         
         // ずらし幅はランダムカラーの時は分かりづらくなるので強めにする
-        let rzure: Int;
-        if  opts.colorPattern == ColorPattern.p1 ||
-            opts.colorPattern == ColorPattern.p2
-        {
-            rzure = (width <= 100) ? 1 : width / 50;
-        }
-        else {
-            rzure = (width <= 100) ? 1 : width / 80;
-        }
+        let rzure: Int = 14;
 
         // 上、左、中央、右、下に余白をとって画像の崩れを予防
         let margin: Int = rzure*2;
@@ -247,43 +236,45 @@ class Stereogram
 
                 //print("sourcePos:\(sourcePos), pos:\(pos)");
 
-                // 白い部分を浮き上がらせる
                 //print("source[sourcePos * colorSize + col.r]:\(source[sourcePos * colorSize + col.r])");
                 //print("source[sourcePos * colorSize + col.g]:\(source[sourcePos * colorSize + col.g])");
                 //print("source[sourcePos * colorSize + col.b]:\(source[sourcePos * colorSize + col.b])");
+                /*
                 let depth = getDepthMap(
                     (r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]),
                     zure: rzure, colorPattern: opts.colorPattern);
-                if depth > 0 {
-                    if opts.colorPattern == ColorPattern.random1 {
-                        let color = colors[Int(arc4random()) % colors.count];
-                        out[(pos + depth) * origColorSize + outCol.r] = color.r;
-                        out[(pos + depth) * origColorSize + outCol.g] = color.g;
-                        out[(pos + depth) * origColorSize + outCol.b] = color.b;
-                        
-                        out[(pairpos + pos - depth) * origColorSize + outCol.r] = out[(pos + depth) * origColorSize + outCol.r];
-                        out[(pairpos + pos - depth) * origColorSize + outCol.g] = out[(pos + depth) * origColorSize + outCol.g];
-                        out[(pairpos + pos - depth) * origColorSize + outCol.b] = out[(pos + depth) * origColorSize + outCol.b];
+                */
+                let depth = getDepthMap_Brightness((r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]), zure: rzure, colorPattern: opts.colorPattern);
+                if opts.colorPattern == ColorPattern.random1 {
+                    let color = colors[Int(arc4random()) % colors.count];
+                    out[(pos + depth) * origColorSize + outCol.r] = color.r;
+                    out[(pos + depth) * origColorSize + outCol.g] = color.g;
+                    out[(pos + depth) * origColorSize + outCol.b] = color.b;
+                    
+                    out[(pairpos + pos - depth) * origColorSize + outCol.r] = out[(pos + depth) * origColorSize + outCol.r];
+                    out[(pairpos + pos - depth) * origColorSize + outCol.g] = out[(pos + depth) * origColorSize + outCol.g];
+                    out[(pairpos + pos - depth) * origColorSize + outCol.b] = out[(pos + depth) * origColorSize + outCol.b];
+                }
+                else {
+                    out[(pos + depth) * origColorSize + outCol.r] = origSource[sourcePos * origColorSize + origCol.r];
+                    out[(pos + depth) * origColorSize + outCol.g] = origSource[sourcePos * origColorSize + origCol.g];
+                    out[(pos + depth) * origColorSize + outCol.b] = origSource[sourcePos * origColorSize + origCol.b];
+                    
+                    out[(pairpos + pos - depth) * origColorSize + outCol.r] = origSource[sourcePos * origColorSize + origCol.r];
+                    out[(pairpos + pos - depth) * origColorSize + outCol.g] = origSource[sourcePos * origColorSize + origCol.g];
+                    out[(pairpos + pos - depth) * origColorSize + outCol.b] = origSource[sourcePos * origColorSize + origCol.b];
+                    
+                    /*
+                    if x >= depth {
+                        out[pos * origColorSize + outCol.r] = origSource[(sourcePos - depth) * origColorSize + origCol.r];
+                        out[pos * origColorSize + outCol.g] = origSource[(sourcePos - depth) * origColorSize + origCol.g];
+                        out[pos * origColorSize + outCol.b] = origSource[(sourcePos - depth) * origColorSize + origCol.b];
                     }
-                    else {
-                        out[(pos + depth) * origColorSize + outCol.r] = origSource[sourcePos * origColorSize + origCol.r];
-                        out[(pos + depth) * origColorSize + outCol.g] = origSource[sourcePos * origColorSize + origCol.g];
-                        out[(pos + depth) * origColorSize + outCol.b] = origSource[sourcePos * origColorSize + origCol.b];
-                        
-                        //out[(pairpos + pos - depth) * origColorSize + outCol.r] = out[(pos + depth) * origColorSize + outCol.r];
-                        //out[(pairpos + pos - depth) * origColorSize + outCol.g] = out[(pos + depth) * origColorSize + outCol.g];
-                        //out[(pairpos + pos - depth) * origColorSize + outCol.b] = out[(pos + depth) * origColorSize + outCol.b];
-                        
-                        if x >= depth {
-                            out[pos * origColorSize + outCol.r] = origSource[(sourcePos - depth) * origColorSize + origCol.r];
-                            out[pos * origColorSize + outCol.g] = origSource[(sourcePos - depth) * origColorSize + origCol.g];
-                            out[pos * origColorSize + outCol.b] = origSource[(sourcePos - depth) * origColorSize + origCol.b];
-                        }
-                    }
+                    */
                 }
                 
-                if  opts.colorPattern == ColorPattern.p1 ||
-                    opts.colorPattern == ColorPattern.p2
+                /*
+                if opts.colorPattern != ColorPattern.random1
                 {
                     if x < depth {
                         out[pos * origColorSize + outCol.r] = 0;
@@ -291,6 +282,7 @@ class Stereogram
                         out[pos * origColorSize + outCol.b] = 0;
                     }
                 }
+                */
             }
         }
         
@@ -368,12 +360,6 @@ class Stereogram
             depth = depth_p3;
         case .p4:
             depth = depth_p4;
-        case .pred:
-            depth = depth_p_red;
-        case .pgreen:
-            depth = depth_p_green;
-        case .pblue:
-            depth = depth_p_blue;
         case .random1:
             depth = depth_p1;
         }
@@ -388,5 +374,52 @@ class Stereogram
             }
         }
         return ret;
+    }
+    func getDepthMap_Brightness(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
+        let fzure = CGFloat(zure) * 2.0;
+        
+        //print("fzure: \(fzure)");
+
+        let depth: Int;
+        switch colorPattern {
+        case .p1:
+            // 明度算出
+            let t = CGFloat(max(max(color.r, color.g), color.b));
+            let u = CGFloat(min(min(color.r, color.g), color.b));
+            let a = (t + u) / CGFloat(2);
+            let ratio = a / CGFloat(255);
+            depth = Int(fzure * (1 - ratio));
+        case .p2:
+            // 明度算出
+            let t = CGFloat(max(max(color.r, color.g), color.b));
+            let u = CGFloat(min(min(color.r, color.g), color.b));
+            let a = (t + u) / CGFloat(2);
+            let ratio = a / CGFloat(255);
+            depth = Int(fzure * ratio);
+        case .p3:
+            // 輝度算出
+            let r = CGFloat(color.r) / CGFloat(255);
+            let g = CGFloat(color.g) / CGFloat(255);
+            let b = CGFloat(color.b) / CGFloat(255);
+            let luminance = ( 0.298912 * r + 0.586611 * g + 0.114478 * b);
+            depth = Int(fzure * (1 - luminance));
+        case .p4:
+            // 輝度算出
+            let r = CGFloat(color.r) / CGFloat(255);
+            let g = CGFloat(color.g) / CGFloat(255);
+            let b = CGFloat(color.b) / CGFloat(255);
+            let luminance = ( 0.298912 * r + 0.586611 * g + 0.114478 * b);
+            depth = Int(fzure * luminance);
+        case .random1:
+            // 輝度算出
+            let r = CGFloat(color.r) / CGFloat(255);
+            let g = CGFloat(color.g) / CGFloat(255);
+            let b = CGFloat(color.b) / CGFloat(255);
+            let luminance = ( 0.298912 * r + 0.586611 * g + 0.114478 * b);
+            depth = Int(fzure * (1 - luminance));
+        }
+        
+        //print("depth: \(depth)");
+        return depth / 2;
     }
 }
