@@ -12,14 +12,14 @@ class ViewController: UIViewController
 {
 
     @IBOutlet var imageView: UIImageView!
+    @IBOutlet weak var baseDotView: UIView!
     
     @IBOutlet weak var changeCreateModeBtn: UIBarButtonItem!
+    @IBOutlet weak var randomDotBtn: UIBarButtonItem!
     
     var createMode = Stereogram.ColorPattern.p1;
     func createModeString(p: Stereogram.ColorPattern) -> String {
-        switch p{
-        case .random1:
-            return NSLocalizedString("modemagiceye", comment: "モードマジックアイ")
+        switch p {
         case .p1:
             return NSLocalizedString("modepattern1", comment: "モードパターン1")
         case .p2:
@@ -31,6 +31,17 @@ class ViewController: UIViewController
         }
     }
     
+    var randomDot: Bool = false;
+    func randomDotString(v: Bool) -> String {
+        if v {
+            return NSLocalizedString("RamdomDotOFFBtn", comment: "ランダムドットOFF")
+        }
+        else {
+            return NSLocalizedString("RamdomDotONBtn", comment: "ランダムドットON")
+        }
+    }
+    var leftDotView: UIView?;
+    var rightDotView: UIView?;
     
     var original: UIImage? = nil;
     var stereogram: UIImage? = nil;
@@ -74,7 +85,7 @@ class ViewController: UIViewController
         myActivityIndicator.center = imageView.center
         
         changeCreateModeBtn.title = createModeString(createMode);
-
+        randomDotBtn.title = randomDotString(randomDot);
 
         let ud = NSUserDefaults.standardUserDefaults();
         if let _ = ud.objectForKey("tutorial") {
@@ -200,6 +211,51 @@ class ViewController: UIViewController
 
         presentViewController(actionSheet, animated: true, completion: nil)
 
+    }
+    
+    @IBAction func randomDotAction(sender: UIBarButtonItem) {
+        if randomDot {
+            randomDot = false;
+        }
+        else {
+            randomDot = true;
+        }
+        randomDotBtn.title = randomDotString(randomDot);
+        exec();
+    }
+    
+    @IBAction func helpAction(sender: UIBarButtonItem) {
+        helpIndex = 0;
+        helpExec();
+    }
+    
+    var help: [TutorialStrings] = [
+        TutorialStrings(t: NSLocalizedString("TT2", comment: "TT2"), m: NSLocalizedString("TM2", comment: "TM2")),
+        TutorialStrings(t: NSLocalizedString("TT3", comment: "TT3"), m: NSLocalizedString("TM3", comment: "TM3")),
+        TutorialStrings(t: NSLocalizedString("TT4", comment: "TT4"), m: NSLocalizedString("TM4", comment: "TM4")),
+        TutorialStrings(t: NSLocalizedString("TT5", comment: "TT5"), m: NSLocalizedString("TM5", comment: "TM5")),
+        TutorialStrings(t: NSLocalizedString("TT6", comment: "TT6"), m: NSLocalizedString("TM6", comment: "TM6")),
+        TutorialStrings(t: NSLocalizedString("TT7", comment: "TT7"), m: NSLocalizedString("TM7", comment: "TM7")),
+        TutorialStrings(t: NSLocalizedString("TT8", comment: "TT8"), m: NSLocalizedString("TM8", comment: "TM8")),
+    ]
+    var helpIndex: Int = 0;
+    func helpExec() {
+        if helpIndex >= help.count {
+            helpIndex = 0;
+            return;
+        }
+        let alert = UIAlertController(title: help[helpIndex].t,
+            message: help[helpIndex].m,
+            preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
+            style: UIAlertActionStyle.Cancel,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.helpIndex++;
+                self.helpExec();
+        })
+        alert.addAction(cancelAction)
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     @IBAction func otherAction(sender: AnyObject) {
@@ -558,7 +614,8 @@ class ViewController: UIViewController
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
             
-            self.stereogram = Stereogram().generateStereogramImage(kuwahara, depthImage: kuwahara, colorPattern: self.createMode);
+            let ret = Stereogram().generateStereogramImage(kuwahara, depthImage: kuwahara, colorPattern: self.createMode, randomDot: self.randomDot);
+            self.stereogram = ret.image;
             dispatch_sync(dispatch_get_main_queue(), { () -> Void in
                 
                 self.myActivityIndicator.stopAnimating();
@@ -567,6 +624,9 @@ class ViewController: UIViewController
                     
                     self.imageView.image = s;
                     self.imageView.setNeedsDisplay();
+                    
+                    self.updateDots(s, marginSize: ret.marginSize);
+
                     let alert = UIAlertController(title:NSLocalizedString("How to title", comment: "左右の画像が重なるように視点を移動しよう！"),
                         message: NSLocalizedString("How to message", comment: "画像の奥を見るよう意識してみよう。"),
                         preferredStyle: UIAlertControllerStyle.Alert)
@@ -592,6 +652,31 @@ class ViewController: UIViewController
                 }
             })
         })
+    }
+    
+    func updateDots(image: UIImage, marginSize: Int) {
+        
+        for subview in self.baseDotView.subviews {
+            subview.removeFromSuperview()
+        }
+        
+        let frame = AVMakeRectWithAspectRatioInsideRect(image.size, self.imageView.bounds);
+        print("frame: \(frame)");
+        let margin = (frame.width / image.size.width) * CGFloat(marginSize);
+        print("margin: \(margin)");
+        let dissMarginWidth = frame.size.width - (margin * 2);
+        
+        let leftDotView = UIView(frame: CGRectMake(0, 0, 6, 6))
+        leftDotView.center = CGPointMake((self.baseDotView.frame.size.width/2) - (dissMarginWidth/4), self.baseDotView.frame.size.height/2.0);
+        leftDotView.backgroundColor = UIColor.blackColor()
+        leftDotView.layer.cornerRadius = CGRectGetWidth(leftDotView.bounds) / 2.0
+        self.baseDotView.addSubview(leftDotView)
+        
+        let rightDotView = UIView(frame: CGRectMake(0, 0, 6, 6))
+        rightDotView.center = CGPointMake((self.baseDotView.frame.size.width/2) + (dissMarginWidth/4), self.baseDotView.frame.size.height/2.0);
+        rightDotView.backgroundColor = UIColor.blackColor()
+        rightDotView.layer.cornerRadius = CGRectGetWidth(leftDotView.bounds) / 2.0
+        self.baseDotView.addSubview(rightDotView)
     }
     
     func movieStart(url: NSURL) {
