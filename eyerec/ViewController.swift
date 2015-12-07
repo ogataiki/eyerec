@@ -224,6 +224,40 @@ class ViewController: UIViewController
         exec();
     }
     
+    @IBAction func helpAction(sender: UIBarButtonItem) {
+        helpIndex = 0;
+        helpExec();
+    }
+    
+    var help: [TutorialStrings] = [
+        TutorialStrings(t: NSLocalizedString("TT2", comment: "TT2"), m: NSLocalizedString("TM2", comment: "TM2")),
+        TutorialStrings(t: NSLocalizedString("TT3", comment: "TT3"), m: NSLocalizedString("TM3", comment: "TM3")),
+        TutorialStrings(t: NSLocalizedString("TT4", comment: "TT4"), m: NSLocalizedString("TM4", comment: "TM4")),
+        TutorialStrings(t: NSLocalizedString("TT5", comment: "TT5"), m: NSLocalizedString("TM5", comment: "TM5")),
+        TutorialStrings(t: NSLocalizedString("TT6", comment: "TT6"), m: NSLocalizedString("TM6", comment: "TM6")),
+        TutorialStrings(t: NSLocalizedString("TT7", comment: "TT7"), m: NSLocalizedString("TM7", comment: "TM7")),
+        TutorialStrings(t: NSLocalizedString("TT8", comment: "TT8"), m: NSLocalizedString("TM8", comment: "TM8")),
+    ]
+    var helpIndex: Int = 0;
+    func helpExec() {
+        if helpIndex >= help.count {
+            helpIndex = 0;
+            return;
+        }
+        let alert = UIAlertController(title: help[helpIndex].t,
+            message: help[helpIndex].m,
+            preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
+            style: UIAlertActionStyle.Cancel,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.helpIndex++;
+                self.helpExec();
+        })
+        alert.addAction(cancelAction)
+        presentViewController(alert, animated: true, completion: nil)
+    }
+    
     @IBAction func otherAction(sender: AnyObject) {
         
         if myActivityIndicator.isAnimating() {

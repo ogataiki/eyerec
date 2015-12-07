@@ -24,24 +24,29 @@
                                     <constraint firstAttribute="height" constant="44" id="1W4-MP-R5g"/>
                                 </constraints>
                                 <items>
-                                    <barButtonItem title="MagicEye" id="G6U-zd-5P4">
-                                        <connections>
-                                            <action selector="modeChangeAction:" destination="BYZ-38-t0r" id="bhy-aR-LDW"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem title="RamdomDot" id="M7W-NR-iEH">
-                                        <connections>
-                                            <action selector="randomDotAction:" destination="BYZ-38-t0r" id="HpO-9R-LNU"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="gQQ-5T-Lha"/>
                                     <barButtonItem systemItem="camera" id="VAp-LF-zV3">
                                         <connections>
                                             <action selector="toolbarCameraAction:" destination="BYZ-38-t0r" id="7KP-pu-f5W"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="w3r-YB-c56"/>
+                                    <barButtonItem title="MagicEye" id="G6U-zd-5P4">
+                                        <connections>
+                                            <action selector="modeChangeAction:" destination="BYZ-38-t0r" id="bhy-aR-LDW"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="gQQ-5T-Lha"/>
+                                    <barButtonItem title="RamdomDot" id="M7W-NR-iEH">
+                                        <connections>
+                                            <action selector="randomDotAction:" destination="BYZ-38-t0r" id="HpO-9R-LNU"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="OY3-MF-Tu5"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="LJh-o4-YUQ"/>
+                                    <barButtonItem title="Help" style="plain" id="frS-vG-voz">
+                                        <connections>
+                                            <action selector="helpAction:" destination="BYZ-38-t0r" id="se2-0I-uKW"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Dew-Kj-dig"/>
                                     <barButtonItem systemItem="action" id="5Oc-5t-zjV">
                                         <connections>
