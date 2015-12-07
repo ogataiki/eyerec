@@ -8,10 +8,9 @@ class Stereogram
 {
     enum ColorPattern: Int {
         case p1 = 0, p2, p3, p4
-        case random1
         
         static func count() -> Int {
-            return 5;
+            return 4;
         }
         
         static func getFromRawValue(val: Int) -> ColorPattern {
@@ -20,7 +19,7 @@ class Stereogram
             case 1: return p2;
             case 2: return p3;
             case 3: return p4;
-            default: return random1;
+            default: return p1;
             }
         }
     }
@@ -29,12 +28,13 @@ class Stereogram
         var origImage: UIImage!
         var depthImage: UIImage!
         var colorPattern: ColorPattern = .p1
+        var randomDot: Bool = false
     };
     
-    func generateStereogramImage(origImage: UIImage, depthImage: UIImage, colorPattern: ColorPattern = .p1)
-        -> UIImage?
+    func generateStereogramImage(origImage: UIImage, depthImage: UIImage, colorPattern: ColorPattern = .p1, randomDot: Bool = false)
+        -> (image: UIImage?, marginSize: Int)
     {
-        let data = generatePixelData(OPT(origImage: origImage, depthImage: depthImage, colorPattern: colorPattern));
+        let data = generatePixelData(OPT(origImage: origImage, depthImage: depthImage, colorPattern: colorPattern, randomDot: randomDot));
         //print("out data w,h,c,len:\(data.width),\(data.height),\(data.colorSize),\(data.data.count)");
         
         let cgImage = origImage.CGImage;
@@ -71,13 +71,13 @@ class Stereogram
             , false
             , renderingIntent);
         if let cg = outImage {
-            return UIImage(CGImage: cg, scale: 1.0, orientation: origImage.imageOrientation);
+            return (image: UIImage(CGImage: cg, scale: 1.0, orientation: origImage.imageOrientation), marginSize: data.marginSize);
             //return UIImage(CGImage: cg);
         }
-        return nil;
+        return (image: nil, marginSize: 0);
     }
     
-    func generatePixelData(opts: OPT) -> (data: [UInt8], width: Int, height: Int, colorSize: Int) {
+    func generatePixelData(opts: OPT) -> (data: [UInt8], width: Int, height: Int, colorSize: Int, marginSize: Int) {
     
         let origcgImage = opts.origImage.CGImage;
         let cgImage = opts.depthImage.CGImage;
@@ -198,7 +198,7 @@ class Stereogram
                 
                 //print("sourcePos:\(sourcePos), pos:\(pos)");
                 
-                if opts.colorPattern == ColorPattern.random1 {
+                if opts.randomDot {
                     let color = colors[Int(arc4random()) % colors.count];
                     out[pos * origColorSize + outCol.r] = color.r;
                     out[pos * origColorSize + outCol.g] = color.g;
@@ -214,7 +214,7 @@ class Stereogram
                 out[(pairpos + pos) * origColorSize + outCol.b] = out[pos * origColorSize + outCol.b];
                 
                 if origCol.a >= 0 {
-                    if opts.colorPattern == ColorPattern.random1 {
+                    if opts.randomDot {
                         out[pos * origColorSize + outCol.a] = UInt8(128 + arc4random() % 128);
                         out[(pairpos + pos) * origColorSize + outCol.a] = out[pos * origColorSize + outCol.a];
                     }
@@ -245,7 +245,7 @@ class Stereogram
                     zure: rzure, colorPattern: opts.colorPattern);
                 */
                 let depth = getDepthMap_Brightness((r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]), zure: rzure, colorPattern: opts.colorPattern);
-                if opts.colorPattern == ColorPattern.random1 {
+                if opts.randomDot {
                     let color = colors[Int(arc4random()) % colors.count];
                     out[(pos + depth) * origColorSize + outCol.r] = color.r;
                     out[(pos + depth) * origColorSize + outCol.g] = color.g;
@@ -286,7 +286,7 @@ class Stereogram
             }
         }
         
-        return (out, maxWidth, maxHeight, colorSize);
+        return (out, maxWidth, maxHeight, colorSize, margin);
     }
     
     struct DepthRange {
@@ -360,8 +360,6 @@ class Stereogram
             depth = depth_p3;
         case .p4:
             depth = depth_p4;
-        case .random1:
-            depth = depth_p1;
         }
         for i in 0 ..< depth.count {
             let d = depth[i];
@@ -410,13 +408,6 @@ class Stereogram
             let b = CGFloat(color.b) / CGFloat(255);
             let luminance = ( 0.298912 * r + 0.586611 * g + 0.114478 * b);
             depth = Int(fzure * luminance);
-        case .random1:
-            // 輝度算出
-            let r = CGFloat(color.r) / CGFloat(255);
-            let g = CGFloat(color.g) / CGFloat(255);
-            let b = CGFloat(color.b) / CGFloat(255);
-            let luminance = ( 0.298912 * r + 0.586611 * g + 0.114478 * b);
-            depth = Int(fzure * (1 - luminance));
         }
         
         //print("depth: \(depth)");
