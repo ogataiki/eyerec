@@ -95,7 +95,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedLast:    // RGBA
             print("origAlphaInfo.PremultipliedLast");
-            origCol = (r: 3, g:2, b:1, a:0);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                origCol = (r: 0, g:1, b:2, a:3);
+            }
+            else {
+                origCol = (r: 3, g:2, b:1, a:0);
+            }
             origColorSize = 4;
             break;
             
@@ -104,7 +109,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedFirst:   // ARGB
             print("origAlphaInfo.PremultipliedFirst");
-            origCol = (r: 2, g:1, b:0, a:3);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                origCol = (r: 1, g:2, b:3, a:0);
+            }
+            else {
+                origCol = (r: 2, g:1, b:0, a:3);
+            }
             origColorSize = 4;
             break;
             
@@ -128,7 +138,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedLast:    // RGBA
             print("alphaInfo.PremultipliedLast");
-            col = (r: 3, g:2, b:1, a:0);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                col = (r: 0, g:1, b:2, a:3);
+            }
+            else {
+                col = (r: 3, g:2, b:1, a:0);
+            }
             colorSize = 4;
             break;
             
@@ -137,7 +152,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedFirst:   // ARGB
             print("alphaInfo.PremultipliedFirst");
-            col = (r: 2, g:1, b:0, a:3);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                col = (r: 1, g:2, b:3, a:0);
+            }
+            else {
+                col = (r: 2, g:1, b:0, a:3);
+            }
             colorSize = 4;
             break;
             
@@ -239,12 +259,19 @@ class Stereogram
                 //print("source[sourcePos * colorSize + col.r]:\(source[sourcePos * colorSize + col.r])");
                 //print("source[sourcePos * colorSize + col.g]:\(source[sourcePos * colorSize + col.g])");
                 //print("source[sourcePos * colorSize + col.b]:\(source[sourcePos * colorSize + col.b])");
-                /*
-                let depth = getDepthMap(
-                    (r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]),
-                    zure: rzure, colorPattern: opts.colorPattern);
-                */
-                let depth = getDepthMap_Brightness((r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]), zure: rzure, colorPattern: opts.colorPattern);
+                let depth: Int;
+                switch opts.colorPattern {
+                case .p1:
+                    depth = getDepthMap_Brightness((r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]), zure: rzure, colorPattern: opts.colorPattern);
+                case .p2:
+                    fallthrough
+                case .p3:
+                    fallthrough
+                case .p4:
+                    depth = getDepthMap(
+                        (r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]),
+                        zure: rzure, colorPattern: opts.colorPattern);
+                }
                 if opts.randomDot {
                     let color = colors[Int(arc4random()) % colors.count];
                     out[(pos + depth) * origColorSize + outCol.r] = color.r;
@@ -323,30 +350,7 @@ class Stereogram
         DepthStrength(range: DepthRange(r: (t: 255, u: d_t), g: (t: 255, u: d_t), b: (t: d_t, u:   0)), ratio: 1)
     ];
     var depth_p3: [DepthStrength] = [
-        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: 255, u: d_u), b: (t: d_u, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: d_u, u:   0), g: (t: 255, u: d_u), b: (t: 255, u: d_u)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: d_u, u:   0), b: (t: 255, u: d_u)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u: d_u), g: (t: d_u, u:   0), b: (t: d_u, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: d_u, u:   0), g: (t: 255, u: d_u), b: (t: d_u, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: d_u, u:   0), g: (t: d_u, u:   0), b: (t: 255, u: d_u)), ratio: 1)
-    ];
-    var depth_p4: [DepthStrength] = [
         DepthStrength(range: DepthRange(r: (t: d_u, u: d_t), g: (t: d_u, u: d_t), b: (t: d_u, u: d_t)), ratio: 1)
-    ];
-    var depth_p_red: [DepthStrength] = [
-        DepthStrength(range: DepthRange(r: (t: 255, u:  64), g: (t:  64, u:   0), b: (t:  64, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u: 128), g: (t: 128, u:  64), b: (t: 128, u:  64)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 255, u: 192), g: (t: 192, u: 128), b: (t: 192, u: 128)), ratio: 1)
-    ];
-    var depth_p_green: [DepthStrength] = [
-        DepthStrength(range: DepthRange(r: (t:  64, u:   0), g: (t: 255, u:  64), b: (t:  64, u:   0)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 128, u:  64), g: (t: 255, u: 128), b: (t: 128, u:  64)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 192, u: 128), g: (t: 255, u: 192), b: (t: 192, u: 128)), ratio: 1)
-    ];
-    var depth_p_blue: [DepthStrength] = [
-        DepthStrength(range: DepthRange(r: (t:  64, u:   0), g: (t:  64, u:   0), b: (t: 255, u:  64)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 128, u:  64), g: (t: 128, u:  64), b: (t: 255, u: 128)), ratio: 1),
-        DepthStrength(range: DepthRange(r: (t: 192, u: 128), g: (t: 192, u: 128), b: (t: 255, u: 192)), ratio: 1)
     ];
     func getDepthMap(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
         var ret = 0;
@@ -355,11 +359,11 @@ class Stereogram
         case .p1:
             depth = depth_p1;
         case .p2:
-            depth = depth_p2;
+            depth = depth_p1;
         case .p3:
-            depth = depth_p3;
+            depth = depth_p2;
         case .p4:
-            depth = depth_p4;
+            depth = depth_p3;
         }
         for i in 0 ..< depth.count {
             let d = depth[i];
