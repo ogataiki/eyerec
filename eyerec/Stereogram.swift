@@ -95,7 +95,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedLast:    // RGBA
             print("origAlphaInfo.PremultipliedLast");
-            origCol = (r: 3, g:2, b:1, a:0);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                origCol = (r: 0, g:1, b:2, a:3);
+            }
+            else {
+                origCol = (r: 3, g:2, b:1, a:0);
+            }
             origColorSize = 4;
             break;
             
@@ -104,7 +109,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedFirst:   // ARGB
             print("origAlphaInfo.PremultipliedFirst");
-            origCol = (r: 2, g:1, b:0, a:3);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                origCol = (r: 1, g:2, b:3, a:0);
+            }
+            else {
+                origCol = (r: 2, g:1, b:0, a:3);
+            }
             origColorSize = 4;
             break;
             
@@ -128,7 +138,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedLast:    // RGBA
             print("alphaInfo.PremultipliedLast");
-            col = (r: 3, g:2, b:1, a:0);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                col = (r: 0, g:1, b:2, a:3);
+            }
+            else {
+                col = (r: 3, g:2, b:1, a:0);
+            }
             colorSize = 4;
             break;
             
@@ -137,7 +152,12 @@ class Stereogram
             fallthrough;
         case .PremultipliedFirst:   // ARGB
             print("alphaInfo.PremultipliedFirst");
-            col = (r: 2, g:1, b:0, a:3);
+            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+                col = (r: 1, g:2, b:3, a:0);
+            }
+            else {
+                col = (r: 2, g:1, b:0, a:3);
+            }
             colorSize = 4;
             break;
             
