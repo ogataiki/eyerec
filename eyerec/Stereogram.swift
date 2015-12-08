@@ -180,8 +180,18 @@ class Stereogram
         //let inSize = width * height * colorSize;
         
         // ずらし幅はランダムカラーの時は分かりづらくなるので強めにする
-        let rzure: Int = 14;
-
+        let rzure: Int;
+        switch opts.colorPattern {
+        case .p1:
+            rzure = 12
+        case .p2:
+            rzure = 8
+        case .p3:
+            rzure = 8
+        case .p4:
+            rzure = 8
+        }
+        
         // 上、左、中央、右、下に余白をとって画像の崩れを予防
         let margin: Int = rzure*2;
         

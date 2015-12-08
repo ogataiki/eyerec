@@ -34,10 +34,10 @@ class ViewController: UIViewController
     var randomDot: Bool = false;
     func randomDotString(v: Bool) -> String {
         if v {
-            return NSLocalizedString("RamdomDotONBtn", comment: "ランダムドットON")
+            return NSLocalizedString("RandomDotONBtn", comment: "ランダムドットON")
         }
         else {
-            return NSLocalizedString("RamdomDotOFFBtn", comment: "ランダムドットOFF")
+            return NSLocalizedString("RandomDotOFFBtn", comment: "ランダムドットOFF")
         }
     }
     var leftDotView: UIView?;
@@ -84,8 +84,8 @@ class ViewController: UIViewController
 
         myActivityIndicator.center = imageView.center
         
-        changeCreateModeBtn.title = createModeString(createMode);
-        randomDotBtn.title = randomDotString(randomDot);
+        changeCreateModeBtn.title = NSLocalizedString("patterntitle", comment: "パターンタイトル");
+        randomDotBtn.title = NSLocalizedString("RandomDotTitle", comment: "ランダムドットタイトル");
 
         let ud = NSUserDefaults.standardUserDefaults();
         if let _ = ud.objectForKey("tutorial") {
