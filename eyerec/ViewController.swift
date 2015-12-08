@@ -34,10 +34,10 @@ class ViewController: UIViewController
     var randomDot: Bool = false;
     func randomDotString(v: Bool) -> String {
         if v {
-            return NSLocalizedString("RamdomDotOFFBtn", comment: "ランダムドットOFF")
+            return NSLocalizedString("RamdomDotONBtn", comment: "ランダムドットON")
         }
         else {
-            return NSLocalizedString("RamdomDotONBtn", comment: "ランダムドットON")
+            return NSLocalizedString("RamdomDotOFFBtn", comment: "ランダムドットOFF")
         }
     }
     var leftDotView: UIView?;
@@ -214,14 +214,44 @@ class ViewController: UIViewController
     }
     
     @IBAction func randomDotAction(sender: UIBarButtonItem) {
-        if randomDot {
-            randomDot = false;
-        }
-        else {
-            randomDot = true;
-        }
-        randomDotBtn.title = randomDotString(randomDot);
-        exec();
+        //UIActionSheet
+        let actionSheet = UIAlertController(title:NSLocalizedString("Select pattern", comment: "パターン選択"),
+            message: nil,
+            preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
+        //Cancel 一つだけしか指定できない
+        let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
+            style: UIAlertActionStyle.Cancel,
+            handler:{
+                (action:UIAlertAction) -> Void in
+        })
+        actionSheet.addAction(cancelAction)
+
+        let alert_true:UIAlertAction = UIAlertAction(title: randomDotString(true),
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.randomDot = true;
+                self.randomDotBtn.title = self.randomDotString(true);
+                if self.original != nil {
+                    self.exec();
+                }
+        })
+        actionSheet.addAction(alert_true)
+        
+        let alert_false:UIAlertAction = UIAlertAction(title: randomDotString(false),
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction) -> Void in
+                self.randomDot = false;
+                self.randomDotBtn.title = self.randomDotString(false);
+                if self.original != nil {
+                    self.exec();
+                }
+        })
+        actionSheet.addAction(alert_false)
+        
+        presentViewController(actionSheet, animated: true, completion: nil)
     }
     
     @IBAction func helpAction(sender: UIBarButtonItem) {
