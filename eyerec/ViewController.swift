@@ -28,6 +28,8 @@ class ViewController: UIViewController
             return NSLocalizedString("modepattern3", comment: "モードパターン3")
         case .p4:
             return NSLocalizedString("modepattern4", comment: "モードパターン4")
+        case .p5:
+            return NSLocalizedString("modepattern5", comment: "モードパターン5")
         }
     }
     

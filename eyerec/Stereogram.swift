@@ -7,10 +7,10 @@ private let d_u: UInt8 = 214;
 class Stereogram
 {
     enum ColorPattern: Int {
-        case p1 = 0, p2, p3, p4
+        case p1 = 0, p2, p3, p4, p5
         
         static func count() -> Int {
-            return 4;
+            return 5;
         }
         
         static func getFromRawValue(val: Int) -> ColorPattern {
@@ -19,6 +19,7 @@ class Stereogram
             case 1: return p2;
             case 2: return p3;
             case 3: return p4;
+            case 4: return p5;
             default: return p1;
             }
         }
@@ -179,17 +180,24 @@ class Stereogram
         let height = Int(opts.origImage.size.height);
         //let inSize = width * height * colorSize;
         
-        // ずらし幅はランダムカラーの時は分かりづらくなるので強めにする
         let rzure: Int;
         switch opts.colorPattern {
         case .p1:
-            rzure = 12
+            fallthrough
         case .p2:
-            rzure = 8
+            rzure = 12
         case .p3:
-            rzure = 8
+            fallthrough
         case .p4:
-            rzure = 8
+            fallthrough
+        case .p5:
+            // ずらし幅はランダムカラーの時は分かりづらくなるので強めにする
+            if opts.randomDot {
+                rzure = 12;
+            }
+            else {
+                rzure = 8;
+            }
         }
         
         // 上、左、中央、右、下に余白をとって画像の崩れを予防
@@ -272,12 +280,14 @@ class Stereogram
                 let depth: Int;
                 switch opts.colorPattern {
                 case .p1:
-                    depth = getDepthMap_Brightness((r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]), zure: rzure, colorPattern: opts.colorPattern);
-                case .p2:
                     fallthrough
+                case .p2:
+                    depth = getDepthMap_Brightness((r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]), zure: rzure, colorPattern: opts.colorPattern);
                 case .p3:
                     fallthrough
                 case .p4:
+                    fallthrough
+                case .p5:
                     depth = getDepthMap(
                         (r:source[sourcePos * colorSize + col.r], g:source[sourcePos * colorSize + col.g], b:source[sourcePos * colorSize + col.b]),
                         zure: rzure, colorPattern: opts.colorPattern);
@@ -300,26 +310,7 @@ class Stereogram
                     out[(pairpos + pos - depth) * origColorSize + outCol.r] = origSource[sourcePos * origColorSize + origCol.r];
                     out[(pairpos + pos - depth) * origColorSize + outCol.g] = origSource[sourcePos * origColorSize + origCol.g];
                     out[(pairpos + pos - depth) * origColorSize + outCol.b] = origSource[sourcePos * origColorSize + origCol.b];
-                    
-                    /*
-                    if x >= depth {
-                        out[pos * origColorSize + outCol.r] = origSource[(sourcePos - depth) * origColorSize + origCol.r];
-                        out[pos * origColorSize + outCol.g] = origSource[(sourcePos - depth) * origColorSize + origCol.g];
-                        out[pos * origColorSize + outCol.b] = origSource[(sourcePos - depth) * origColorSize + origCol.b];
-                    }
-                    */
                 }
-                
-                /*
-                if opts.colorPattern != ColorPattern.random1
-                {
-                    if x < depth {
-                        out[pos * origColorSize + outCol.r] = 0;
-                        out[pos * origColorSize + outCol.g] = 0;
-                        out[pos * origColorSize + outCol.b] = 0;
-                    }
-                }
-                */
             }
         }
         
@@ -371,8 +362,10 @@ class Stereogram
         case .p2:
             depth = depth_p1;
         case .p3:
-            depth = depth_p2;
+            depth = depth_p1;
         case .p4:
+            depth = depth_p2;
+        case .p5:
             depth = depth_p3;
         }
         for i in 0 ..< depth.count {
@@ -422,6 +415,8 @@ class Stereogram
             let b = CGFloat(color.b) / CGFloat(255);
             let luminance = ( 0.298912 * r + 0.586611 * g + 0.114478 * b);
             depth = Int(fzure * luminance);
+        case .p5:
+            depth = zure;
         }
         
         //print("depth: \(depth)");
