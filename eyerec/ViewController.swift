@@ -44,6 +44,7 @@ class ViewController: UIViewController
     }
     var leftDotView: UIView?;
     var rightDotView: UIView?;
+    var marginSize: Int = 0;
     
     var original: UIImage? = nil;
     var stereogram: UIImage? = nil;
@@ -65,8 +66,10 @@ class ViewController: UIViewController
         
         imageView.image = nil;
         
-        
-        original = UIImage(named: "DefaultImage\(1+arc4random()%3)");
+        if let _ = original {}
+        else {
+            original = UIImage(named: "DefaultImage\(1+arc4random()%3)");
+        }
         
         // インジケータを作成する.
         myActivityIndicator = UIActivityIndicatorView()
@@ -80,17 +83,30 @@ class ViewController: UIViewController
         self.view.addSubview(myActivityIndicator)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        
+        super.viewWillAppear(animated);
+    
+    }
+    
     override func viewDidAppear(animated: Bool) {
-
+        
         super.viewDidAppear(animated);
-
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        
+        super.viewDidLayoutSubviews();
+        
         myActivityIndicator.center = imageView.center
         
         changeCreateModeBtn.title = NSLocalizedString("patterntitle", comment: "パターンタイトル");
         randomDotBtn.title = NSLocalizedString("RandomDotTitle", comment: "ランダムドットタイトル");
-
+        
         let ud = NSUserDefaults.standardUserDefaults();
         if let _ = ud.objectForKey("tutorial") {
+            
             if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
                 exec();
             }
@@ -656,6 +672,7 @@ class ViewController: UIViewController
                     
                     self.imageView.image = s;
                     self.imageView.setNeedsDisplay();
+                    self.marginSize = ret.marginSize;
                     
                     self.updateDots(s, marginSize: ret.marginSize);
 
@@ -870,6 +887,18 @@ class ViewController: UIViewController
         return true;
     }
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.Landscape
+        return UIInterfaceOrientationMask.All;
+    }
+    override func viewWillTransitionToSize(size: CGSize
+        , withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
+    {
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator);
+        
+        // viewを切り替える
+        let orig = original;
+        self.dismissViewControllerAnimated(false, completion: nil);
+        let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainVC") as! ViewController;
+        vc.original = orig;
+        self.presentViewController(vc, animated:false, completion: nil);
     }
 }
