@@ -10,6 +10,7 @@ class ViewController: UIViewController
 , UINavigationControllerDelegate
 , GPUImageMovieDelegate
 {
+    @IBOutlet weak var backImageView: UIImageView!
 
     @IBOutlet var imageView: UIImageView!
     @IBOutlet weak var baseDotView: UIView!
@@ -86,13 +87,17 @@ class ViewController: UIViewController
     override func viewWillAppear(animated: Bool) {
         
         super.viewWillAppear(animated);
-    
     }
     
     override func viewDidAppear(animated: Bool) {
         
         super.viewDidAppear(animated);
         
+        // iAdを使用する
+        self.canDisplayBannerAds = true;
+        
+        // iAd(インタースティシャル)の自動表示
+        self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.Automatic;
     }
     
     override func viewDidLayoutSubviews() {
@@ -104,18 +109,14 @@ class ViewController: UIViewController
         changeCreateModeBtn.title = NSLocalizedString("patterntitle", comment: "パターンタイトル");
         randomDotBtn.title = NSLocalizedString("RandomDotTitle", comment: "ランダムドットタイトル");
         
+        backImageView.image = UIImage(named: "BackImage\(1+arc4random()%2)");
+
         let ud = NSUserDefaults.standardUserDefaults();
         if let _ = ud.objectForKey("tutorial") {
             
             if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
                 exec();
             }
-            
-            // iAdを使用する
-            self.canDisplayBannerAds = true;
-            
-            // iAd(インタースティシャル)の自動表示
-            self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.Automatic;
         }
         else {
             if isTutorial == false {
