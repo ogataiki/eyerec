@@ -38,14 +38,14 @@ class Stereogram
         let data = generatePixelData(OPT(origImage: origImage, depthImage: depthImage, colorPattern: colorPattern, randomDot: randomDot));
         //print("out data w,h,c,len:\(data.width),\(data.height),\(data.colorSize),\(data.data.count)");
         
-        let cgImage = origImage.CGImage;
+        //let cgImage = origImage.CGImage;
         
-        let origAlphaInfo = CGImageGetAlphaInfo(cgImage);
-        let origBitmapInfo = CGImageGetBitmapInfo(cgImage);
-        let origColorSpace = CGImageGetColorSpace(cgImage);
-        print("origAlphaInfo:\(origAlphaInfo.rawValue)");
-        print("origBitmapInfo:\(origBitmapInfo.rawValue)");
-        print("origColorSpace:\(origColorSpace)");
+        //let origAlphaInfo = CGImageGetAlphaInfo(cgImage);
+        //let origBitmapInfo = CGImageGetBitmapInfo(cgImage);
+        //let origColorSpace = CGImageGetColorSpace(cgImage);
+        //print("origAlphaInfo:\(origAlphaInfo.rawValue)");
+        //print("origBitmapInfo:\(origBitmapInfo.rawValue)");
+        //print("origColorSpace:\(origColorSpace)");
 
         // こっちだとイメージ作り終わるまでインスタンスが保持できないっぽい
         //let provider = CGDataProviderCreateWithData(nil, data.data, data.data.count, nil);
@@ -57,9 +57,9 @@ class Stereogram
         let colorSpaceRef = CGColorSpaceCreateDeviceRGB();
         let bitmapInfo = CGBitmapInfo.ByteOrderDefault; // CGBitmapInfo(rawValue: origAlphaInfo.rawValue);
         let renderingIntent = CGColorRenderingIntent.RenderingIntentDefault;
-        print("colorSpaceRef:\(colorSpaceRef)");
-        print("bitmapInfo:\(bitmapInfo.rawValue)");
-        print("renderingIntent:\(renderingIntent.rawValue)");
+        //print("colorSpaceRef:\(colorSpaceRef)");
+        //print("bitmapInfo:\(bitmapInfo.rawValue)");
+        //print("renderingIntent:\(renderingIntent.rawValue)");
 
         let outImage = CGImageCreate(data.width, data.height
             , bitsPerComponent
@@ -92,10 +92,10 @@ class Stereogram
         let origCol: (r: Int, g: Int, b: Int, a: Int);
         switch origAlphaInfo {
         case .Last:                 // RGBA
-            print("origAlphaInfo.Last");
+            //print("origAlphaInfo.Last");
             fallthrough;
         case .PremultipliedLast:    // RGBA
-            print("origAlphaInfo.PremultipliedLast");
+            //print("origAlphaInfo.PremultipliedLast");
             if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
                 origCol = (r: 0, g:1, b:2, a:3);
             }
@@ -106,10 +106,10 @@ class Stereogram
             break;
             
         case .First:                // ARGB
-            print("origAlphaInfo.First");
+            //print("origAlphaInfo.First");
             fallthrough;
         case .PremultipliedFirst:   // ARGB
-            print("origAlphaInfo.PremultipliedFirst");
+            //print("origAlphaInfo.PremultipliedFirst");
             if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
                 origCol = (r: 1, g:2, b:3, a:0);
             }
@@ -120,7 +120,7 @@ class Stereogram
             break;
             
         default:    // non alpha channel
-            print("origAlphaInfo.Other");
+            //print("origAlphaInfo.Other");
             outCol = (r: 0, g:1, b:2, a:-1);
             origCol = (r: 2, g:1, b:0, a:-1);
             origColorSize = 3;
@@ -128,17 +128,17 @@ class Stereogram
         }
         
         // GPUImage処理後のカラー配列は端末のエンディアンに置き換わってるぽい
-        let byteOrder = CFByteOrderGetCurrent();
-        print("byteOrder:\(byteOrder)");
+        //let byteOrder = CFByteOrderGetCurrent();
+        //print("byteOrder:\(byteOrder)");
         
         let colorSize: Int;
         let col: (r: Int, g: Int, b: Int, a: Int);
         switch alphaInfo {
         case .Last:                 // RGBA
-            print("alphaInfo.Last");
+            //print("alphaInfo.Last");
             fallthrough;
         case .PremultipliedLast:    // RGBA
-            print("alphaInfo.PremultipliedLast");
+            //print("alphaInfo.PremultipliedLast");
             if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
                 col = (r: 0, g:1, b:2, a:3);
             }
@@ -149,10 +149,10 @@ class Stereogram
             break;
             
         case .First:                // ARGB
-            print("alphaInfo.First");
+            //print("alphaInfo.First");
             fallthrough;
         case .PremultipliedFirst:   // ARGB
-            print("alphaInfo.PremultipliedFirst");
+            //print("alphaInfo.PremultipliedFirst");
             if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
                 col = (r: 1, g:2, b:3, a:0);
             }
@@ -163,7 +163,7 @@ class Stereogram
             break;
             
         default:    // non alpha channel
-            print("alphaInfo.Other");
+            //print("alphaInfo.Other");
             col = (r: 0, g:1, b:2, a:-1);
             colorSize = 3;
             break;
@@ -208,7 +208,7 @@ class Stereogram
         let maxHeight = Int(height) + (margin*2);       // 作成される画像の高さ
         let outSize = maxWidth * maxHeight * origColorSize;
         
-        print("size:\(width),\(height), maxSize:\(maxWidth),\(maxHeight), outSize:\(outSize)");
+        //print("size:\(width),\(height), maxSize:\(maxWidth),\(maxHeight), outSize:\(outSize)");
 
         
         var out: [UInt8] = Array(count: outSize, repeatedValue: 0);

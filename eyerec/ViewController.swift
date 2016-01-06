@@ -49,6 +49,7 @@ class ViewController: UIViewController
     
     var original: UIImage? = nil;
     var stereogram: UIImage? = nil;
+    var back: UIImage? = nil;
     
     var leftVideoView : GPUImageView!;
     var rightVideoView : GPUImageView!;
@@ -62,7 +63,14 @@ class ViewController: UIViewController
     private var myActivityIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        
+        print(__FUNCTION__);
+
+        // 画面回転によるautolayoutの制約再適用を許可
+        self.view!.translatesAutoresizingMaskIntoConstraints = true;
+        
         // Do any additional setup after loading the view, typically from a nib.
         
         imageView.image = nil;
@@ -70,6 +78,11 @@ class ViewController: UIViewController
         if let _ = original {}
         else {
             original = UIImage(named: "DefaultImage\(1+arc4random()%3)");
+        }
+        
+        if let _ = back {}
+        else {
+            back = UIImage(named: "BackImage\(1+arc4random()%2)");
         }
         
         // インジケータを作成する.
@@ -82,35 +95,55 @@ class ViewController: UIViewController
         
         // インジケータをViewに追加する.
         self.view.addSubview(myActivityIndicator)
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        
-        super.viewWillAppear(animated);
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        
-        super.viewDidAppear(animated);
         
         // iAdを使用する
         self.canDisplayBannerAds = true;
         
         // iAd(インタースティシャル)の自動表示
         self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.Automatic;
+        
+        // 端末の向きがかわったらNotificationを呼ばす設定.
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "onOrientationChange:", name: UIDeviceOrientationDidChangeNotification, object: nil)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        super.viewWillAppear(animated);
+        
+        print(__FUNCTION__);
+
+    }
+    
+    override func viewWillLayoutSubviews() {
+        
+        super.viewWillLayoutSubviews();
+        
+        print(__FUNCTION__);
+        
     }
     
     override func viewDidLayoutSubviews() {
         
         super.viewDidLayoutSubviews();
         
+        print(__FUNCTION__);
+        
+        self.view!.layoutIfNeeded();
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        super.viewDidAppear(animated);
+        
+        print(__FUNCTION__);
+        
         myActivityIndicator.center = imageView.center
         
         changeCreateModeBtn.title = NSLocalizedString("patterntitle", comment: "パターンタイトル");
         randomDotBtn.title = NSLocalizedString("RandomDotTitle", comment: "ランダムドットタイトル");
         
-        backImageView.image = UIImage(named: "BackImage\(1+arc4random()%2)");
-
+        backImageView.image = back;
+        
         let ud = NSUserDefaults.standardUserDefaults();
         if let _ = ud.objectForKey("tutorial") {
             
@@ -124,6 +157,21 @@ class ViewController: UIViewController
                 isTutorial = true;
             }
         }
+    }
+    
+    // 端末の向きがかわったら呼び出される.
+    func onOrientationChange(notification: NSNotification){
+        
+        print(__FUNCTION__);
+        
+        // 現在のデバイスの向きを取得.
+        //let deviceOrientation: UIDeviceOrientation!  = UIDevice.currentDevice().orientation
+        
+        if original != nil && stereogram != nil {
+            self.updateDots(stereogram!, marginSize: marginSize);
+        }
+        
+        myActivityIndicator.center = imageView.center
     }
     
     struct TutorialStrings {
@@ -604,6 +652,11 @@ class ViewController: UIViewController
         }
     }
 
+    // 選択キャンセル時
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
     
     // 写真や動画を選択した時に呼ばれる
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
@@ -673,6 +726,7 @@ class ViewController: UIViewController
                     
                     self.imageView.image = s;
                     self.imageView.setNeedsDisplay();
+                    
                     self.marginSize = ret.marginSize;
                     
                     self.updateDots(s, marginSize: ret.marginSize);
@@ -711,9 +765,9 @@ class ViewController: UIViewController
         }
         
         let frame = AVMakeRectWithAspectRatioInsideRect(image.size, self.imageView.bounds);
-        print("frame: \(frame)");
+        //print("frame: \(frame)");
         let margin = (frame.width / image.size.width) * CGFloat(marginSize);
-        print("margin: \(margin)");
+        //print("margin: \(margin)");
         let dissMarginWidth = frame.size.width - (margin * 2);
         
         let leftDotView = UIView(frame: CGRectMake(0, 0, 6, 6))
@@ -895,11 +949,6 @@ class ViewController: UIViewController
     {
         super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator);
         
-        // viewを切り替える
-        let orig = original;
-        self.dismissViewControllerAnimated(false, completion: nil);
-        let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainVC") as! ViewController;
-        vc.original = orig;
-        self.presentViewController(vc, animated:false, completion: nil);
+        print(__FUNCTION__);
     }
 }
