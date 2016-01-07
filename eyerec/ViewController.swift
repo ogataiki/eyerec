@@ -212,6 +212,11 @@ class ViewController: UIViewController
                 self.tutorialExec();
         })
         alert.addAction(cancelAction)
+        
+        //For ipad And Univarsal Device
+        alert.popoverPresentationController?.sourceView = self.view!;
+        alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
+
         presentViewController(alert, animated: true, completion: nil)
     }
 
@@ -230,6 +235,11 @@ class ViewController: UIViewController
                 (action:UIAlertAction) -> Void in
         })
         alert.addAction(cancelAction)
+        
+        //For ipad And Univarsal Device
+        alert.popoverPresentationController?.sourceView = self.view!;
+        alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
+
         presentViewController(alert, animated: true, completion: nil)
     }
 
@@ -276,6 +286,10 @@ class ViewController: UIViewController
             actionSheet.addAction(alert)
         }
 
+        //For ipad And Univarsal Device
+        actionSheet.popoverPresentationController?.sourceView = self.view!;
+        actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.28), y: self.view!.frame.height-44, width: 0, height: 0);
+
         presentViewController(actionSheet, animated: true, completion: nil)
 
     }
@@ -318,6 +332,10 @@ class ViewController: UIViewController
         })
         actionSheet.addAction(alert_false)
         
+        //For ipad And Univarsal Device
+        actionSheet.popoverPresentationController?.sourceView = self.view!;
+        actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.55), y: self.view!.frame.height-44, width: 0, height: 0);
+
         presentViewController(actionSheet, animated: true, completion: nil)
     }
     
@@ -352,6 +370,11 @@ class ViewController: UIViewController
                 self.helpExec();
         })
         alert.addAction(cancelAction)
+        
+        //For ipad And Univarsal Device
+        alert.popoverPresentationController?.sourceView = self.view!;
+        alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
+
         presentViewController(alert, animated: true, completion: nil)
     }
     
@@ -448,6 +471,10 @@ class ViewController: UIViewController
         }
         */
         
+        //For ipad And Univarsal Device
+        actionSheet.popoverPresentationController?.sourceView = self.view!;
+        actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.95), y: self.view!.frame.height-44, width: 0, height: 0);
+
         presentViewController(actionSheet, animated: true, completion: nil)
     }
     
@@ -465,6 +492,11 @@ class ViewController: UIViewController
                     (action:UIAlertAction) -> Void in
             })
             alert.addAction(cancelAction)
+            
+            //For ipad And Univarsal Device
+            alert.popoverPresentationController?.sourceView = self.view!;
+            alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
+
             presentViewController(alert, animated: true, completion: nil)
         }
         else {
@@ -477,6 +509,11 @@ class ViewController: UIViewController
                     (action:UIAlertAction) -> Void in
             })
             alert.addAction(cancelAction)
+            
+            //For ipad And Univarsal Device
+            alert.popoverPresentationController?.sourceView = self.view!;
+            alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
+
             presentViewController(alert, animated: true, completion: nil)
         }
     }
@@ -526,6 +563,10 @@ class ViewController: UIViewController
         actionSheet.addAction(libraryAction)
         //actionSheet.addAction(videoAction)
         
+        //For ipad And Univarsal Device
+        actionSheet.popoverPresentationController?.sourceView = self.view!;
+        actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.05), y: self.view!.frame.height-44, width: 0, height: 0);
+
         presentViewController(actionSheet, animated: true, completion: nil)
     }
     
@@ -740,6 +781,11 @@ class ViewController: UIViewController
                             (action:UIAlertAction) -> Void in
                     })
                     alert.addAction(cancelAction)
+                    
+                    //For ipad And Univarsal Device
+                    alert.popoverPresentationController?.sourceView = self.view!;
+                    alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
+
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
                 else {
@@ -752,6 +798,11 @@ class ViewController: UIViewController
                             (action:UIAlertAction) -> Void in
                     })
                     alert.addAction(cancelAction)
+                    
+                    //For ipad And Univarsal Device
+                    alert.popoverPresentationController?.sourceView = self.view!;
+                    alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
+
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
             })
