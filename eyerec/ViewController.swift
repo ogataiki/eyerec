@@ -296,7 +296,7 @@ class ViewController: UIViewController
     
     @IBAction func randomDotAction(sender: UIBarButtonItem) {
         //UIActionSheet
-        let actionSheet = UIAlertController(title:NSLocalizedString("Select pattern", comment: "パターン選択"),
+        let actionSheet = UIAlertController(title:NSLocalizedString("Select mode", comment: "モード選択"),
             message: nil,
             preferredStyle: UIAlertControllerStyle.ActionSheet)
         
