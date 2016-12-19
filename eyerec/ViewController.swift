@@ -19,7 +19,7 @@ class ViewController: UIViewController
     @IBOutlet weak var randomDotBtn: UIBarButtonItem!
     
     var createMode = Stereogram.ColorPattern.p1;
-    func createModeString(p: Stereogram.ColorPattern) -> String {
+    func createModeString(_ p: Stereogram.ColorPattern) -> String {
         switch p {
         case .p1:
             return NSLocalizedString("modepattern1", comment: "モードパターン1")
@@ -35,7 +35,7 @@ class ViewController: UIViewController
     }
     
     var randomDot: Bool = false;
-    func randomDotString(v: Bool) -> String {
+    func randomDotString(_ v: Bool) -> String {
         if v {
             return NSLocalizedString("RandomDotONBtn", comment: "ランダムドットON")
         }
@@ -56,17 +56,17 @@ class ViewController: UIViewController
     var videoRote: CGFloat = 0;
     var leftMovie: GPUImageMovie!;
     var rightMovie: GPUImageMovie!;
-    var videoURL : NSURL!;
+    var videoURL : URL!;
     
     var isVideo = false
     
-    private var myActivityIndicator: UIActivityIndicatorView!
+    fileprivate var myActivityIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-        print(__FUNCTION__);
+        print(#function);
 
         // 画面回転によるautolayoutの制約再適用を許可
         self.view!.translatesAutoresizingMaskIntoConstraints = true;
@@ -87,11 +87,11 @@ class ViewController: UIViewController
         
         // インジケータを作成する.
         myActivityIndicator = UIActivityIndicatorView()
-        myActivityIndicator.frame = CGRectMake(0, 0, 50, 50)
+        myActivityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         
         // アニメーションが停止している時もインジケータを表示させる.
         myActivityIndicator.hidesWhenStopped = true
-        myActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+        myActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
         
         // インジケータをViewに追加する.
         self.view.addSubview(myActivityIndicator)
@@ -100,17 +100,17 @@ class ViewController: UIViewController
         self.canDisplayBannerAds = true;
         
         // iAd(インタースティシャル)の自動表示
-        self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.Automatic;
+        self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.automatic;
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "onOrientationChange:", name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.onOrientationChange(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated);
         
-        print(__FUNCTION__);
+        print(#function);
 
     }
     
@@ -118,7 +118,7 @@ class ViewController: UIViewController
         
         super.viewWillLayoutSubviews();
         
-        print(__FUNCTION__);
+        print(#function);
         
     }
     
@@ -126,16 +126,16 @@ class ViewController: UIViewController
         
         super.viewDidLayoutSubviews();
         
-        print(__FUNCTION__);
+        print(#function);
         
         self.view!.layoutIfNeeded();
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated);
         
-        print(__FUNCTION__);
+        print(#function);
         
         myActivityIndicator.center = imageView.center
         
@@ -144,10 +144,10 @@ class ViewController: UIViewController
         
         backImageView.image = back;
         
-        let ud = NSUserDefaults.standardUserDefaults();
-        if let _ = ud.objectForKey("tutorial") {
+        let ud = UserDefaults.standard;
+        if let _ = ud.object(forKey: "tutorial") {
             
-            if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
+            if isVideo == false && myActivityIndicator.isAnimating == false && imageView.image == nil {
                 exec();
             }
         }
@@ -160,9 +160,9 @@ class ViewController: UIViewController
     }
     
     // 端末の向きがかわったら呼び出される.
-    func onOrientationChange(notification: NSNotification){
+    func onOrientationChange(_ notification: Notification){
         
-        print(__FUNCTION__);
+        print(#function);
         
         // 現在のデバイスの向きを取得.
         //let deviceOrientation: UIDeviceOrientation!  = UIDevice.currentDevice().orientation
@@ -192,10 +192,10 @@ class ViewController: UIViewController
     var isTutorial = false;
     func tutorialExec() {
         if tutorialIndex >= tutorial.count {
-            let ud = NSUserDefaults.standardUserDefaults();
-            ud.setObject(NSNumber(bool: true), forKey: "tutorial");
+            let ud = UserDefaults.standard;
+            ud.set(NSNumber(value: true as Bool), forKey: "tutorial");
             
-            if isVideo == false && myActivityIndicator.isAnimating() == false && imageView.image == nil {
+            if isVideo == false && myActivityIndicator.isAnimating == false && imageView.image == nil {
                 exec();
             }
 
@@ -203,12 +203,12 @@ class ViewController: UIViewController
         }
         let alert = UIAlertController(title: tutorial[tutorialIndex].t,
             message: tutorial[tutorialIndex].m,
-            preferredStyle: UIAlertControllerStyle.Alert)
+            preferredStyle: UIAlertControllerStyle.alert)
         let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
-                self.tutorialIndex++;
+                self.tutorialIndex += 1;
                 self.tutorialExec();
         })
         alert.addAction(cancelAction)
@@ -217,7 +217,7 @@ class ViewController: UIViewController
         alert.popoverPresentationController?.sourceView = self.view!;
         alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
 
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -228,9 +228,9 @@ class ViewController: UIViewController
     func procAlart() {
         let alert = UIAlertController(title:NSLocalizedString("Processing", comment: "画像処理中です。"),
             message: nil,
-            preferredStyle: UIAlertControllerStyle.Alert)
+            preferredStyle: UIAlertControllerStyle.alert)
         let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
         })
@@ -240,19 +240,19 @@ class ViewController: UIViewController
         alert.popoverPresentationController?.sourceView = self.view!;
         alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
 
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 
-    @IBAction func toolbarCameraAction(sender: AnyObject) {
-        if myActivityIndicator.isAnimating() {
+    @IBAction func toolbarCameraAction(_ sender: AnyObject) {
+        if myActivityIndicator.isAnimating {
             procAlart();
             return;
         }
         pickSelect()
     }
     
-    @IBAction func modeChangeAction(sender: UIBarButtonItem) {
-        if myActivityIndicator.isAnimating() {
+    @IBAction func modeChangeAction(_ sender: UIBarButtonItem) {
+        if myActivityIndicator.isAnimating {
             procAlart();
             return;
         }
@@ -260,11 +260,11 @@ class ViewController: UIViewController
         //UIActionSheet
         let actionSheet = UIAlertController(title:NSLocalizedString("Select pattern", comment: "パターン選択"),
             message: nil,
-            preferredStyle: UIAlertControllerStyle.ActionSheet)
+            preferredStyle: UIAlertControllerStyle.actionSheet)
         
         //Cancel 一つだけしか指定できない
         let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
         })
@@ -274,7 +274,7 @@ class ViewController: UIViewController
         for i in 0 ..< Stereogram.ColorPattern.count() {
             let p = Stereogram.ColorPattern.getFromRawValue(i);
             let alert:UIAlertAction = UIAlertAction(title: createModeString(p),
-                style: UIAlertActionStyle.Default,
+                style: UIAlertActionStyle.default,
                 handler:{
                     (action:UIAlertAction) -> Void in
                     self.createMode = p;
@@ -290,26 +290,26 @@ class ViewController: UIViewController
         actionSheet.popoverPresentationController?.sourceView = self.view!;
         actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.28), y: self.view!.frame.height-44, width: 0, height: 0);
 
-        presentViewController(actionSheet, animated: true, completion: nil)
+        present(actionSheet, animated: true, completion: nil)
 
     }
     
-    @IBAction func randomDotAction(sender: UIBarButtonItem) {
+    @IBAction func randomDotAction(_ sender: UIBarButtonItem) {
         //UIActionSheet
         let actionSheet = UIAlertController(title:NSLocalizedString("Select mode", comment: "モード選択"),
             message: nil,
-            preferredStyle: UIAlertControllerStyle.ActionSheet)
+            preferredStyle: UIAlertControllerStyle.actionSheet)
         
         //Cancel 一つだけしか指定できない
         let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
         })
         actionSheet.addAction(cancelAction)
 
         let alert_true:UIAlertAction = UIAlertAction(title: randomDotString(true),
-            style: UIAlertActionStyle.Default,
+            style: UIAlertActionStyle.default,
             handler:{
                 (action:UIAlertAction) -> Void in
                 self.randomDot = true;
@@ -321,7 +321,7 @@ class ViewController: UIViewController
         actionSheet.addAction(alert_true)
         
         let alert_false:UIAlertAction = UIAlertAction(title: randomDotString(false),
-            style: UIAlertActionStyle.Default,
+            style: UIAlertActionStyle.default,
             handler:{
                 (action:UIAlertAction) -> Void in
                 self.randomDot = false;
@@ -336,10 +336,10 @@ class ViewController: UIViewController
         actionSheet.popoverPresentationController?.sourceView = self.view!;
         actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.55), y: self.view!.frame.height-44, width: 0, height: 0);
 
-        presentViewController(actionSheet, animated: true, completion: nil)
+        present(actionSheet, animated: true, completion: nil)
     }
     
-    @IBAction func helpAction(sender: UIBarButtonItem) {
+    @IBAction func helpAction(_ sender: UIBarButtonItem) {
         helpIndex = 0;
         helpExec();
     }
@@ -361,12 +361,12 @@ class ViewController: UIViewController
         }
         let alert = UIAlertController(title: help[helpIndex].t,
             message: help[helpIndex].m,
-            preferredStyle: UIAlertControllerStyle.Alert)
+            preferredStyle: UIAlertControllerStyle.alert)
         let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
-                self.helpIndex++;
+                self.helpIndex += 1;
                 self.helpExec();
         })
         alert.addAction(cancelAction)
@@ -375,12 +375,12 @@ class ViewController: UIViewController
         alert.popoverPresentationController?.sourceView = self.view!;
         alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
 
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
-    @IBAction func otherAction(sender: AnyObject) {
+    @IBAction func otherAction(_ sender: AnyObject) {
         
-        if myActivityIndicator.isAnimating() {
+        if myActivityIndicator.isAnimating {
             procAlart();
             return;
         }
@@ -388,11 +388,11 @@ class ViewController: UIViewController
         //UIActionSheet
         let actionSheet = UIAlertController(title:NSLocalizedString("Option", comment: "オプション"),
             message: nil,
-            preferredStyle: UIAlertControllerStyle.ActionSheet)
+            preferredStyle: UIAlertControllerStyle.actionSheet)
         
         //Cancel 一つだけしか指定できない
         let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
         })
@@ -400,13 +400,13 @@ class ViewController: UIViewController
 
         if let i = self.imageView.image {
             let saveAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Save image", comment: "表示中画像を保存"),
-                style: UIAlertActionStyle.Default,
+                style: UIAlertActionStyle.default,
                 handler:{
                     (action:UIAlertAction) -> Void in
                     
                     UIImageWriteToSavedPhotosAlbum(i
                         , self
-                        , "onSaveImageFinish:didFinishSavingWithError:contextInfo:"
+                        , #selector(ViewController.onSaveImageFinish(_:didFinishSavingWithError:contextInfo:))
                         , nil);
             })
             actionSheet.addAction(saveAction)
@@ -475,19 +475,19 @@ class ViewController: UIViewController
         actionSheet.popoverPresentationController?.sourceView = self.view!;
         actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.95), y: self.view!.frame.height-44, width: 0, height: 0);
 
-        presentViewController(actionSheet, animated: true, completion: nil)
+        present(actionSheet, animated: true, completion: nil)
     }
     
-    func onSaveImageFinish(image: UIImage
+    func onSaveImageFinish(_ image: UIImage
         , didFinishSavingWithError error: NSError!
-        , contextInfo: UnsafeMutablePointer<Void>)
+        , contextInfo: UnsafeMutableRawPointer)
     {
         if error != nil {
             let alert = UIAlertController(title:NSLocalizedString("Save image error", comment: "保存失敗"),
                 message: nil,
-                preferredStyle: UIAlertControllerStyle.Alert)
+                preferredStyle: UIAlertControllerStyle.alert)
             let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
-                style: UIAlertActionStyle.Cancel,
+                style: UIAlertActionStyle.cancel,
                 handler:{
                     (action:UIAlertAction) -> Void in
             })
@@ -497,14 +497,14 @@ class ViewController: UIViewController
             alert.popoverPresentationController?.sourceView = self.view!;
             alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
 
-            presentViewController(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
         else {
             let alert = UIAlertController(title:NSLocalizedString("Save image success", comment: "保存しました"),
                 message: nil,
-                preferredStyle: UIAlertControllerStyle.Alert)
+                preferredStyle: UIAlertControllerStyle.alert)
             let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
-                style: UIAlertActionStyle.Cancel,
+                style: UIAlertActionStyle.cancel,
                 handler:{
                     (action:UIAlertAction) -> Void in
             })
@@ -514,7 +514,7 @@ class ViewController: UIViewController
             alert.popoverPresentationController?.sourceView = self.view!;
             alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
 
-            presentViewController(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
     }
     
@@ -523,18 +523,18 @@ class ViewController: UIViewController
         //UIActionSheet
         let actionSheet = UIAlertController(title:NSLocalizedString("Select image", comment: "画像を選択"),
             message: nil,
-            preferredStyle: UIAlertControllerStyle.ActionSheet)
+            preferredStyle: UIAlertControllerStyle.actionSheet)
         
         //Cancel 一つだけしか指定できない
         let cancelAction:UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "やめる"),
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
         })
         
         //Default 複数指定可
         let cameraAction = UIAlertAction(title: NSLocalizedString("Take a photo", comment: "写真を撮影"),
-            style: UIAlertActionStyle.Default,
+            style: UIAlertActionStyle.default,
             handler:{
                 (action:UIAlertAction) -> Void in
                 self.movieStop();
@@ -542,7 +542,7 @@ class ViewController: UIViewController
         })
         
         let libraryAction = UIAlertAction(title: NSLocalizedString("Photo album", comment: "カメラロールから選ぶ"),
-            style: UIAlertActionStyle.Default,
+            style: UIAlertActionStyle.default,
             handler:{
                 (action:UIAlertAction) -> Void in
                 self.movieStop();
@@ -567,10 +567,10 @@ class ViewController: UIViewController
         actionSheet.popoverPresentationController?.sourceView = self.view!;
         actionSheet.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width*0.05), y: self.view!.frame.height-44, width: 0, height: 0);
 
-        presentViewController(actionSheet, animated: true, completion: nil)
+        present(actionSheet, animated: true, completion: nil)
     }
     
-    func imageFilter_left(video: Bool = false) -> GPUImageFilterGroup {
+    func imageFilter_left(_ video: Bool = false) -> GPUImageFilterGroup {
         
         //return ImageProcessing.groupFilter([
             //ImageProcessing.luminanceThresholdFilter() as GPUImageFilter
@@ -609,7 +609,7 @@ class ViewController: UIViewController
         */
     }
 
-    func imageFilter_left(image: UIImage, video: Bool = false) -> UIImage {
+    func imageFilter_left(_ image: UIImage, video: Bool = false) -> UIImage {
         
         //return ImageProcessing.groupFilter([
             //ImageProcessing.luminanceThresholdFilter() as GPUImageFilter
@@ -623,7 +623,7 @@ class ViewController: UIViewController
         //return ImageProcessing.lowPassMoveFilter().imageByFilteringImage(image);
     }
     
-    func imageFilter_right(video: Bool = false) -> GPUImageFilterGroup {
+    func imageFilter_right(_ video: Bool = false) -> GPUImageFilterGroup {
         
         return ImageProcessing.lowPassMoveFilter();
 
@@ -652,62 +652,62 @@ class ViewController: UIViewController
         return ImageProcessing.transformFilter(transform, ignoreAspectRatio: true);
         */
     }
-    func imageFilter_right(image: UIImage, video: Bool = false) -> UIImage {
+    func imageFilter_right(_ image: UIImage, video: Bool = false) -> UIImage {
         
-        return ImageProcessing.lowPassMoveFilter().imageByFilteringImage(image);
+        return ImageProcessing.lowPassMoveFilter().image(byFilteringImage: image);
     }
 
 
     // 写真を撮ってそれを選択
     func pickImageFromCamera() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
             let controller = UIImagePickerController()
             controller.delegate = self
-            controller.sourceType = UIImagePickerControllerSourceType.Camera
-            controller.modalPresentationStyle = UIModalPresentationStyle.CurrentContext;
-            self.presentViewController(controller, animated: true, completion: nil)
+            controller.sourceType = UIImagePickerControllerSourceType.camera
+            controller.modalPresentationStyle = UIModalPresentationStyle.currentContext;
+            self.present(controller, animated: true, completion: nil)
         }
     }
     
     // ライブラリから写真を選択する
     func pickImageFromLibrary() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
             let controller = UIImagePickerController()
             controller.delegate = self
-            controller.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            controller.modalPresentationStyle = UIModalPresentationStyle.CurrentContext;
+            controller.sourceType = UIImagePickerControllerSourceType.photoLibrary
+            controller.modalPresentationStyle = UIModalPresentationStyle.currentContext;
             controller.allowsEditing = false;
-            self.presentViewController(controller, animated: true, completion: nil)
+            self.present(controller, animated: true, completion: nil)
         }
     }
     
     // ライブラリから動画を選択する
     func pickMovieFromLibrary() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
             let controller = UIImagePickerController()
             controller.delegate = self
-            controller.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+            controller.sourceType = UIImagePickerControllerSourceType.photoLibrary
             controller.mediaTypes = [kUTTypeMovie as String];
             controller.allowsEditing = false;
-            self.presentViewController(controller, animated: true, completion: nil)
+            self.present(controller, animated: true, completion: nil)
         }
     }
 
     // 選択キャンセル時
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
     }
     
     // 写真や動画を選択した時に呼ばれる
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
 
         let mediaType: CFString = info[UIImagePickerControllerMediaType] as! CFString;
         if mediaType == kUTTypeMovie {
             
-            videoURL = info[UIImagePickerControllerMediaURL] as! NSURL;
+            videoURL = info[UIImagePickerControllerMediaURL] as! URL;
 
             movieStart(videoURL);
             
@@ -728,7 +728,7 @@ class ViewController: UIViewController
         self.imageView.image = origImage;
         
         self.myActivityIndicator.startAnimating();
-        NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.0));
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.0));
         
         // 撮影時の向き反映
         var image: UIImage = origImage;
@@ -738,8 +738,8 @@ class ViewController: UIViewController
         let ratio: CGFloat = baseWidth / image.size.width;
         let newSize = CGSize(width: (image.size.width * ratio), height: (image.size.height * ratio))
         UIGraphicsBeginImageContext(newSize);
-        image.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height));
-        image = UIGraphicsGetImageFromCurrentImageContext();
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height));
+        image = UIGraphicsGetImageFromCurrentImageContext()!;
         UIGraphicsEndImageContext();
 
         let kuwahara = ImageProcessing.kuwaharaFilter(image, radius: 3);
@@ -755,11 +755,11 @@ class ViewController: UIViewController
         
         //let filtered = ImageProcessing.luminanceThresholdFilter(image, threshold: 0.5);
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+        DispatchQueue.global(qos: .default).async {
             
             let ret = Stereogram().generateStereogramImage(kuwahara, depthImage: kuwahara, colorPattern: self.createMode, randomDot: self.randomDot);
             self.stereogram = ret.image;
-            dispatch_sync(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.sync(execute: { () -> Void in
                 
                 self.myActivityIndicator.stopAnimating();
                 
@@ -774,9 +774,9 @@ class ViewController: UIViewController
 
                     let alert = UIAlertController(title:NSLocalizedString("How to title", comment: "左右の画像が重なるように視点を移動しよう！"),
                         message: NSLocalizedString("How to message", comment: "画像の奥を見るよう意識してみよう。"),
-                        preferredStyle: UIAlertControllerStyle.Alert)
+                        preferredStyle: UIAlertControllerStyle.alert)
                     let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
-                        style: UIAlertActionStyle.Cancel,
+                        style: UIAlertActionStyle.cancel,
                         handler:{
                             (action:UIAlertAction) -> Void in
                     })
@@ -786,14 +786,14 @@ class ViewController: UIViewController
                     alert.popoverPresentationController?.sourceView = self.view!;
                     alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
 
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    self.present(alert, animated: true, completion: nil)
                 }
                 else {
                     let alert = UIAlertController(title:NSLocalizedString("Process error", comment: "画像作成に失敗しました。"),
                         message: nil,
-                        preferredStyle: UIAlertControllerStyle.Alert)
+                        preferredStyle: UIAlertControllerStyle.alert)
                     let cancelAction:UIAlertAction = UIAlertAction(title: "OK",
-                        style: UIAlertActionStyle.Cancel,
+                        style: UIAlertActionStyle.cancel,
                         handler:{
                             (action:UIAlertAction) -> Void in
                     })
@@ -803,41 +803,41 @@ class ViewController: UIViewController
                     alert.popoverPresentationController?.sourceView = self.view!;
                     alert.popoverPresentationController?.sourceRect = CGRect(x: (self.view!.frame.width/2), y: (self.view!.frame.height/2), width: 0, height: 0);
 
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    self.present(alert, animated: true, completion: nil)
                 }
             })
-        })
+        }
     }
     
-    func updateDots(image: UIImage, marginSize: Int) {
+    func updateDots(_ image: UIImage, marginSize: Int) {
         
         for subview in self.baseDotView.subviews {
             subview.removeFromSuperview()
         }
         
-        let frame = AVMakeRectWithAspectRatioInsideRect(image.size, self.imageView.bounds);
+        let frame = AVMakeRect(aspectRatio: image.size, insideRect: self.imageView.bounds);
         //print("frame: \(frame)");
         let margin = (frame.width / image.size.width) * CGFloat(marginSize);
         //print("margin: \(margin)");
         let dissMarginWidth = frame.size.width - (margin * 2);
         
-        let leftDotView = UIView(frame: CGRectMake(0, 0, 6, 6))
-        leftDotView.center = CGPointMake((self.baseDotView.frame.size.width/2) - (dissMarginWidth/4), self.baseDotView.frame.size.height/2.0);
-        leftDotView.backgroundColor = UIColor.blackColor()
-        leftDotView.layer.cornerRadius = CGRectGetWidth(leftDotView.bounds) / 2.0
+        let leftDotView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 6))
+        leftDotView.center = CGPoint(x: (self.baseDotView.frame.size.width/2) - (dissMarginWidth/4), y: self.baseDotView.frame.size.height/2.0);
+        leftDotView.backgroundColor = UIColor.black
+        leftDotView.layer.cornerRadius = leftDotView.bounds.width / 2.0
         self.baseDotView.addSubview(leftDotView)
         
-        let rightDotView = UIView(frame: CGRectMake(0, 0, 6, 6))
-        rightDotView.center = CGPointMake((self.baseDotView.frame.size.width/2) + (dissMarginWidth/4), self.baseDotView.frame.size.height/2.0);
-        rightDotView.backgroundColor = UIColor.blackColor()
-        rightDotView.layer.cornerRadius = CGRectGetWidth(leftDotView.bounds) / 2.0
+        let rightDotView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 6))
+        rightDotView.center = CGPoint(x: (self.baseDotView.frame.size.width/2) + (dissMarginWidth/4), y: self.baseDotView.frame.size.height/2.0);
+        rightDotView.backgroundColor = UIColor.black
+        rightDotView.layer.cornerRadius = leftDotView.bounds.width / 2.0
         self.baseDotView.addSubview(rightDotView)
     }
     
-    func movieStart(url: NSURL) {
+    func movieStart(_ url: URL) {
         
-        leftMovie = GPUImageMovie(URL: url);
-        rightMovie = GPUImageMovie(URL: url);
+        leftMovie = GPUImageMovie(url: url);
+        rightMovie = GPUImageMovie(url: url);
         
         leftMovie.delegate = self;
         rightMovie.delegate = self;
@@ -849,11 +849,11 @@ class ViewController: UIViewController
         //rightMovie.shouldRepeat = true;
         
         leftVideoView = GPUImageView();
-        leftVideoView.frame = CGRectMake(0, 0, self.view.frame.size.width*0.5, self.view.frame.size.height);
+        leftVideoView.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width*0.5, height: self.view.frame.size.height);
         self.view.addSubview(leftVideoView);
         
         rightVideoView = GPUImageView();
-        rightVideoView.frame = CGRectMake(self.view.frame.size.width*0.5, 0, self.view.frame.size.width*0.5, self.view.frame.size.height);
+        rightVideoView.frame = CGRect(x: self.view.frame.size.width*0.5, y: 0, width: self.view.frame.size.width*0.5, height: self.view.frame.size.height);
         self.view.addSubview(rightVideoView);
         
         movieRotation(videoRote);
@@ -886,20 +886,20 @@ class ViewController: UIViewController
             isVideo = false;
         }
     }
-    func movieRotation(rote: CGFloat) {
-        leftVideoView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI) * rote / 180.0);
-        rightVideoView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI) * rote / 180.0);
+    func movieRotation(_ rote: CGFloat) {
+        leftVideoView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI) * rote / 180.0);
+        rightVideoView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI) * rote / 180.0);
     }
     
     var movieFinish: Int = 0;
     func didCompletePlayingMovie() {
         if movieFinish == 0 {
-            movieFinish++;
+            movieFinish += 1;
         }
         else {
             movieFinish = 0;
             
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 
                 // UIの更新があるのでメインスレッドで
                 
@@ -913,42 +913,42 @@ class ViewController: UIViewController
         }
     }
     
-    func fixOrientation(image: UIImage) -> UIImage
+    func fixOrientation(_ image: UIImage) -> UIImage
     {
         
-        if image.imageOrientation == UIImageOrientation.Up {
+        if image.imageOrientation == UIImageOrientation.up {
             return image
         }
         
-        var transform = CGAffineTransformIdentity
+        var transform = CGAffineTransform.identity
         
         switch image.imageOrientation {
-        case .Down, .DownMirrored:
-            transform = CGAffineTransformTranslate(transform, image.size.width, image.size.height)
-            transform = CGAffineTransformRotate(transform, CGFloat(M_PI));
+        case .down, .downMirrored:
+            transform = transform.translatedBy(x: image.size.width, y: image.size.height)
+            transform = transform.rotated(by: CGFloat(M_PI));
             
-        case .Left, .LeftMirrored:
-            transform = CGAffineTransformTranslate(transform, image.size.width, 0);
-            transform = CGAffineTransformRotate(transform, CGFloat(M_PI_2));
+        case .left, .leftMirrored:
+            transform = transform.translatedBy(x: image.size.width, y: 0);
+            transform = transform.rotated(by: CGFloat(M_PI_2));
             
-        case .Right, .RightMirrored:
-            transform = CGAffineTransformTranslate(transform, 0, image.size.height);
-            transform = CGAffineTransformRotate(transform, CGFloat(-M_PI_2));
+        case .right, .rightMirrored:
+            transform = transform.translatedBy(x: 0, y: image.size.height);
+            transform = transform.rotated(by: CGFloat(-M_PI_2));
             
-        case .Up, .UpMirrored:
+        case .up, .upMirrored:
             break
         }
         
         
         switch image.imageOrientation {
             
-        case .UpMirrored, .DownMirrored:
-            transform = CGAffineTransformTranslate(transform, image.size.width, 0)
-            transform = CGAffineTransformScale(transform, -1, 1)
+        case .upMirrored, .downMirrored:
+            transform = transform.translatedBy(x: image.size.width, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1)
             
-        case .LeftMirrored, .RightMirrored:
-            transform = CGAffineTransformTranslate(transform, image.size.height, 0)
-            transform = CGAffineTransformScale(transform, -1, 1);
+        case .leftMirrored, .rightMirrored:
+            transform = transform.translatedBy(x: image.size.height, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1);
             
         default:
             break;
@@ -958,48 +958,48 @@ class ViewController: UIViewController
         
         // Now we draw the underlying CGImage into a new context, applying the transform
         // calculated above.
-        let ctx = CGBitmapContextCreate(
-            nil,
-            Int(image.size.width),
-            Int(image.size.height),
-            CGImageGetBitsPerComponent(image.CGImage),
-            0,
-            CGImageGetColorSpace(image.CGImage),
-            UInt32(CGImageGetBitmapInfo(image.CGImage).rawValue)
+        let ctx = CGContext(
+            data: nil,
+            width: Int(image.size.width),
+            height: Int(image.size.height),
+            bitsPerComponent: (image.cgImage?.bitsPerComponent)!,
+            bytesPerRow: 0,
+            space: (image.cgImage?.colorSpace!)!,
+            bitmapInfo: UInt32((image.cgImage?.bitmapInfo.rawValue)!)
         )
         
-        CGContextConcatCTM(ctx, transform);
+        ctx?.concatenate(transform);
         
         switch image.imageOrientation {
             
-        case .Left, .LeftMirrored, .Right, .RightMirrored:
+        case .left, .leftMirrored, .right, .rightMirrored:
             // Grr...
-            CGContextDrawImage(ctx, CGRectMake(0, 0, image.size.height,image.size.width), image.CGImage);
+            ctx?.draw(image.cgImage!, in: CGRect(x: 0, y: 0, width: image.size.height,height: image.size.width));
             
         default:
-            CGContextDrawImage(ctx, CGRectMake(0, 0, image.size.width,image.size.height), image.CGImage);
+            ctx?.draw(image.cgImage!, in: CGRect(x: 0, y: 0, width: image.size.width,height: image.size.height));
             break;
         }
         
-        let cgimg = CGBitmapContextCreateImage(ctx)
+        let cgimg = ctx?.makeImage()
         
-        let img = UIImage(CGImage: cgimg!)
+        let img = UIImage(cgImage: cgimg!)
         
         return img;
         
     }
     
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate : Bool {
         return true;
     }
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.All;
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.all;
     }
-    override func viewWillTransitionToSize(size: CGSize
-        , withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
+    override func viewWillTransition(to size: CGSize
+        , with coordinator: UIViewControllerTransitionCoordinator)
     {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator);
+        super.viewWillTransition(to: size, with: coordinator);
         
-        print(__FUNCTION__);
+        print(#function);
     }
 }

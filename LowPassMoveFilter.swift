@@ -7,7 +7,7 @@ class LowPassMoveFilter : GPUImageFilterGroup
     var averageColor: GPUImageAverageColor;
 
     var lowPassFilterStrength: CGFloat = 0.5;
-    var motionDetectionBlock: ((motionCentroid: CGPoint, motionIntensity: CGFloat, frameTime: CMTime) -> Void)? = nil;
+    var motionDetectionBlock: ((_ motionCentroid: CGPoint, _ motionIntensity: CGFloat, _ frameTime: CMTime) -> Void)? = nil;
     
     override init() {
         
@@ -34,7 +34,7 @@ class LowPassMoveFilter : GPUImageFilterGroup
         
         averageColor.colorAverageProcessingFinishedBlock = {(redComponent: CGFloat, greenComponent: CGFloat, blueComponent: CGFloat, alphaComponent: CGFloat, frameTime: CMTime) -> Void in
             if weakSelf.motionDetectionBlock != nil {
-                weakSelf.motionDetectionBlock!(motionCentroid: CGPointMake(redComponent / alphaComponent, greenComponent / alphaComponent), motionIntensity: alphaComponent, frameTime: frameTime);
+                weakSelf.motionDetectionBlock!(CGPoint(x: redComponent / alphaComponent, y: greenComponent / alphaComponent), alphaComponent, frameTime);
             }
         }
 

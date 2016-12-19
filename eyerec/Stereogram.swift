@@ -13,7 +13,7 @@ class Stereogram
             return 5;
         }
         
-        static func getFromRawValue(val: Int) -> ColorPattern {
+        static func getFromRawValue(_ val: Int) -> ColorPattern {
             switch val {
             case 0: return p1;
             case 1: return p2;
@@ -32,7 +32,7 @@ class Stereogram
         var randomDot: Bool = false
     };
     
-    func generateStereogramImage(origImage: UIImage, depthImage: UIImage, colorPattern: ColorPattern = .p1, randomDot: Bool = false)
+    func generateStereogramImage(_ origImage: UIImage, depthImage: UIImage, colorPattern: ColorPattern = .p1, randomDot: Bool = false)
         -> (image: UIImage?, marginSize: Int)
     {
         let data = generatePixelData(OPT(origImage: origImage, depthImage: depthImage, colorPattern: colorPattern, randomDot: randomDot));
@@ -49,54 +49,55 @@ class Stereogram
 
         // こっちだとイメージ作り終わるまでインスタンスが保持できないっぽい
         //let provider = CGDataProviderCreateWithData(nil, data.data, data.data.count, nil);
-        let nsdata = NSData(bytes: data.data, length: data.data.count);
-        let provider = CGDataProviderCreateWithCFData(nsdata);
+        let nsdata = Data(bytes: UnsafePointer<UInt8>(data.data), count: data.data.count);
+        let provider = CGDataProvider(data: nsdata as CFData);
         let bitsPerComponent: Int = 8;
         let bitsPerPixel: Int = bitsPerComponent * data.colorSize;
         let bytesPerRow: Int = data.width * data.colorSize;
         let colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-        let bitmapInfo = CGBitmapInfo.ByteOrderDefault; // CGBitmapInfo(rawValue: origAlphaInfo.rawValue);
-        let renderingIntent = CGColorRenderingIntent.RenderingIntentDefault;
+        let bitmapInfo = CGBitmapInfo(); // CGBitmapInfo(rawValue: origAlphaInfo.rawValue);
+        let renderingIntent = CGColorRenderingIntent.defaultIntent;
         //print("colorSpaceRef:\(colorSpaceRef)");
         //print("bitmapInfo:\(bitmapInfo.rawValue)");
         //print("renderingIntent:\(renderingIntent.rawValue)");
 
-        let outImage = CGImageCreate(data.width, data.height
-            , bitsPerComponent
-            , bitsPerPixel
-            , bytesPerRow
-            , colorSpaceRef
-            , bitmapInfo
-            , provider
-            , nil
-            , false
-            , renderingIntent);
+        let outImage = CGImage(width: data.width, height: data.height
+            , bitsPerComponent: bitsPerComponent
+            , bitsPerPixel: bitsPerPixel
+            , bytesPerRow: bytesPerRow
+            , space: colorSpaceRef
+            , bitmapInfo: bitmapInfo
+            , provider: provider!
+            , decode: nil
+            , shouldInterpolate: false
+            , intent: renderingIntent);
         if let cg = outImage {
-            return (image: UIImage(CGImage: cg, scale: 1.0, orientation: origImage.imageOrientation), marginSize: data.marginSize);
+            return (image: UIImage(cgImage: cg, scale: 1.0, orientation: origImage.imageOrientation), marginSize: data.marginSize);
             //return UIImage(CGImage: cg);
         }
         return (image: nil, marginSize: 0);
     }
     
-    func generatePixelData(opts: OPT) -> (data: [UInt8], width: Int, height: Int, colorSize: Int, marginSize: Int) {
+    func generatePixelData(_ opts: OPT) -> (data: [UInt8], width: Int, height: Int, colorSize: Int, marginSize: Int) {
     
-        let origcgImage = opts.origImage.CGImage;
-        let cgImage = opts.depthImage.CGImage;
+        let origcgImage = opts.origImage.cgImage;
+        let cgImage = opts.depthImage.cgImage;
 
-        let origAlphaInfo = CGImageGetAlphaInfo(origcgImage);
-        let alphaInfo = CGImageGetAlphaInfo(cgImage);
+        let origAlphaInfo = origcgImage!.alphaInfo;
+        let alphaInfo = cgImage!.alphaInfo;
 
         var outCol: (r: Int, g: Int, b: Int, a: Int) = (r: 0, g:1, b:2, a:3);
         
         let origColorSize: Int;
         let origCol: (r: Int, g: Int, b: Int, a: Int);
+        
         switch origAlphaInfo {
-        case .Last:                 // RGBA
+        case .last:                 // RGBA
             //print("origAlphaInfo.Last");
             fallthrough;
-        case .PremultipliedLast:    // RGBA
+        case .premultipliedLast:    // RGBA
             //print("origAlphaInfo.PremultipliedLast");
-            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+            if ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] != nil {
                 origCol = (r: 0, g:1, b:2, a:3);
             }
             else {
@@ -105,12 +106,12 @@ class Stereogram
             origColorSize = 4;
             break;
             
-        case .First:                // ARGB
+        case .first:                // ARGB
             //print("origAlphaInfo.First");
             fallthrough;
-        case .PremultipliedFirst:   // ARGB
+        case .premultipliedFirst:   // ARGB
             //print("origAlphaInfo.PremultipliedFirst");
-            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+            if ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] != nil {
                 origCol = (r: 1, g:2, b:3, a:0);
             }
             else {
@@ -134,12 +135,12 @@ class Stereogram
         let colorSize: Int;
         let col: (r: Int, g: Int, b: Int, a: Int);
         switch alphaInfo {
-        case .Last:                 // RGBA
+        case .last:                 // RGBA
             //print("alphaInfo.Last");
             fallthrough;
-        case .PremultipliedLast:    // RGBA
+        case .premultipliedLast:    // RGBA
             //print("alphaInfo.PremultipliedLast");
-            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+            if ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] != nil {
                 col = (r: 0, g:1, b:2, a:3);
             }
             else {
@@ -148,12 +149,12 @@ class Stereogram
             colorSize = 4;
             break;
             
-        case .First:                // ARGB
+        case .first:                // ARGB
             //print("alphaInfo.First");
             fallthrough;
-        case .PremultipliedFirst:   // ARGB
+        case .premultipliedFirst:   // ARGB
             //print("alphaInfo.PremultipliedFirst");
-            if NSProcessInfo.processInfo().environment["SIMULATOR_DEVICE_NAME"] != nil {
+            if ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] != nil {
                 col = (r: 1, g:2, b:3, a:0);
             }
             else {
@@ -170,10 +171,10 @@ class Stereogram
         }
 
         
-        let origImageData = CGDataProviderCopyData(CGImageGetDataProvider(origcgImage));
+        let origImageData = origcgImage?.dataProvider?.data;
         let origSource : UnsafePointer = CFDataGetBytePtr(origImageData);
         
-        let imageData = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
+        let imageData = cgImage?.dataProvider?.data;
         let source : UnsafePointer = CFDataGetBytePtr(imageData);
 
         let width = Int(opts.origImage.size.width);
@@ -211,7 +212,7 @@ class Stereogram
         //print("size:\(width),\(height), maxSize:\(maxWidth),\(maxHeight), outSize:\(outSize)");
 
         
-        var out: [UInt8] = Array(count: outSize, repeatedValue: 0);
+        var out: [UInt8] = Array(repeating: 0, count: outSize);
         
         let offset = margin * maxWidth + margin;     // 左画像の左上位置
         let pairpos = width;                // 隣の対応する点までの距離
@@ -227,8 +228,8 @@ class Stereogram
         ];
         
         // 背景作成
-        for var y: Int = 0; y < height; y++ {
-            for var x: Int = 0; x < width; x++ {
+        for y: Int in 0 ..< height {
+            for x: Int in 0 ..< width {
 
                 let sourcePos = y * width + x;
                 
@@ -265,8 +266,8 @@ class Stereogram
         }
         
         // 浮き出る部分作成
-        for var y: Int = 0; y < height; y++ {
-            for var x: Int = 0; x < width; x++ {
+        for y: Int in 0 ..< height {
+            for x: Int in 0 ..< width {
                 
                 let sourcePos = y * width + x;
                 
@@ -353,7 +354,7 @@ class Stereogram
     var depth_p3: [DepthStrength] = [
         DepthStrength(range: DepthRange(r: (t: d_u, u: d_t), g: (t: d_u, u: d_t), b: (t: d_u, u: d_t)), ratio: 1)
     ];
-    func getDepthMap(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
+    func getDepthMap(_ color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
         var ret = 0;
         let depth: [DepthStrength];
         switch colorPattern {
@@ -380,7 +381,7 @@ class Stereogram
         }
         return ret;
     }
-    func getDepthMap_Brightness(color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
+    func getDepthMap_Brightness(_ color: (r: UInt8, g: UInt8, b: UInt8), zure: Int, colorPattern: ColorPattern = .p1) -> Int {
         let fzure = CGFloat(zure) * 2.0;
         
         //print("fzure: \(fzure)");
