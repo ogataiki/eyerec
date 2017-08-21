@@ -3,12 +3,14 @@ import AVFoundation
 import AssetsLibrary
 import GPUImage
 import MobileCoreServices
-import iAd
+import GoogleMobileAds
 
 class ViewController: UIViewController
 , UIImagePickerControllerDelegate
 , UINavigationControllerDelegate
 , GPUImageMovieDelegate
+, GADBannerViewDelegate
+, GADInterstitialDelegate
 {
     @IBOutlet weak var backImageView: UIImageView!
 
@@ -62,6 +64,9 @@ class ViewController: UIViewController
     
     fileprivate var myActivityIndicator: UIActivityIndicatorView!
     
+    var bannerView: GADBannerView!;
+    var interstitial: GADInterstitial?;
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -96,11 +101,20 @@ class ViewController: UIViewController
         // インジケータをViewに追加する.
         self.view.addSubview(myActivityIndicator)
         
-        // iAdを使用する
-        self.canDisplayBannerAds = true;
-        
-        // iAd(インタースティシャル)の自動表示
-        self.interstitialPresentationPolicy = ADInterstitialPresentationPolicy.automatic;
+        // AdMob広告設定
+        bannerView = GADBannerView();
+        bannerView = GADBannerView(adSize:kGADAdSizeBanner)
+        bannerView.frame.origin = CGPoint(x:0, y:UIApplication.shared.statusBarFrame.height)
+        bannerView.frame.size = CGSize(width:self.view.frame.width, height:bannerView.frame.height)
+        // AdMobで発行された広告ユニットIDを設定
+        bannerView.adUnitID = "ca-app-pub-9023231672440164/8613935274"
+        bannerView.delegate = self
+        bannerView.rootViewController = self
+        let gadRequest:GADRequest = GADRequest()
+        // テスト用の広告を表示する時のみ使用（申請時に削除）
+        gadRequest.testDevices = [kGADSimulatorID, "0adae163022cf263d158cc181326be34"]
+        bannerView.load(gadRequest)
+        self.view.addSubview(bannerView)
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.onOrientationChange(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
@@ -167,6 +181,13 @@ class ViewController: UIViewController
         // 現在のデバイスの向きを取得.
         //let deviceOrientation: UIDeviceOrientation!  = UIDevice.currentDevice().orientation
         
+        if(bannerView != nil)
+        {
+            bannerView.frame.origin = CGPoint(
+                x:(self.view.frame.size.width/2) - (bannerView.frame.size.width/2),
+                y:UIApplication.shared.statusBarFrame.height)
+        }
+
         if original != nil && stereogram != nil {
             self.updateDots(stereogram!, marginSize: marginSize);
         }
@@ -714,7 +735,7 @@ class ViewController: UIViewController
             isVideo = true
         }
         else if info[UIImagePickerControllerOriginalImage] != nil {
-
+                        
             self.original = info[UIImagePickerControllerOriginalImage] as? UIImage;
             
             exec();
@@ -887,8 +908,8 @@ class ViewController: UIViewController
         }
     }
     func movieRotation(_ rote: CGFloat) {
-        leftVideoView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI) * rote / 180.0);
-        rightVideoView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI) * rote / 180.0);
+        leftVideoView.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi) * rote / 180.0);
+        rightVideoView.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi) * rote / 180.0);
     }
     
     var movieFinish: Int = 0;
@@ -925,15 +946,15 @@ class ViewController: UIViewController
         switch image.imageOrientation {
         case .down, .downMirrored:
             transform = transform.translatedBy(x: image.size.width, y: image.size.height)
-            transform = transform.rotated(by: CGFloat(M_PI));
+            transform = transform.rotated(by: CGFloat(Double.pi));
             
         case .left, .leftMirrored:
             transform = transform.translatedBy(x: image.size.width, y: 0);
-            transform = transform.rotated(by: CGFloat(M_PI_2));
+            transform = transform.rotated(by: CGFloat((Double.pi / 2)));
             
         case .right, .rightMirrored:
             transform = transform.translatedBy(x: 0, y: image.size.height);
-            transform = transform.rotated(by: CGFloat(-M_PI_2));
+            transform = transform.rotated(by: CGFloat(-(Double.pi / 2)));
             
         case .up, .upMirrored:
             break
