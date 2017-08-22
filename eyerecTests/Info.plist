@@ -19,7 +19,11 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>7</string>
+	<key>NSCameraUsageDescription</key>
+	<string>use image app</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>use image app</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
