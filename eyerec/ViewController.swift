@@ -174,7 +174,7 @@ class ViewController: UIViewController
     }
     
     // 端末の向きがかわったら呼び出される.
-    func onOrientationChange(_ notification: Notification){
+    @objc func onOrientationChange(_ notification: Notification){
         
         print(#function);
         
@@ -499,7 +499,7 @@ class ViewController: UIViewController
         present(actionSheet, animated: true, completion: nil)
     }
     
-    func onSaveImageFinish(_ image: UIImage
+    @objc func onSaveImageFinish(_ image: UIImage
         , didFinishSavingWithError error: NSError!
         , contextInfo: UnsafeMutableRawPointer)
     {
